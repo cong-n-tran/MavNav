@@ -1,16 +1,18 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
 
-const HomeScreen = ({ navigation }) => {
+const Home = ({ navigation }) => {
   return (
     <View>
-      <Text>Home Screen</Text>
+      <Text>
+          Home Screen
+      </Text>
       <Button
         title="Go to Login"
-        onPress={() => navigation.navigate('Authentication')}
+        onPress={() => navigation.navigate('Login')}
       />
     </View>
   );
 };
 
-export default HomeScreen;
+export default Home;
