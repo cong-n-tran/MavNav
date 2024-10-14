@@ -4,7 +4,7 @@ import { NativeModules } from 'react-native';
 
 const { FirebaseAuthModule } = NativeModules;
 
-const AuthScreen = ({ navigation }) => {
+const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -60,13 +60,17 @@ const AuthScreen = ({ navigation }) => {
         style={{ marginBottom: 10, borderBottomWidth: 1 }}
       />
       <Button title="Login" onPress={handleLogin} />
-      <Button title="Register" onPress={handleRegister} />
+      {/* <Button title="Register" onPress={handleRegister} /> */}
       <Button
-        title="Go back to Home"
+        title='Register'
+        onPress={() => navigation.navigate('Register')}
+      />
+      <Button
+        title="Go back"
         onPress={() => navigation.goBack()}
       />
     </View>
   );
 };
 
-export default AuthScreen;
+export default Login;
