@@ -7,6 +7,11 @@ import { StyledView, StyledText } from '../../Style/Style';
 
 const { FirebaseAuthModule } = NativeModules;
 
+
+
+
+
+
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
