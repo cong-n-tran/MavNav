@@ -12,6 +12,7 @@ const FindRoom = ({navigation}) => {
                 title="Go back"
                 // onPress={() => navigation.goBack()}
             />
+            
         </View>
     )
 }
