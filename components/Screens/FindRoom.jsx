@@ -1,17 +1,19 @@
 import React, {useState} from "react";
-import { Text, View } from "react-native";
+import {Pressable, View } from "react-native";
+import { StyledText, StyledView } from "../Style/Style";
 import { Button } from "react-native";
+import GoogleMap from "./Map/Map";
+
 
 const FindRoom = ({navigation}) => {
     return (
+        // <StyledView className="flex-1 justify-center items-center bg-blue-50 p-6">
         <View>
-            <Text>
-                this is the FindRoom
-            </Text>
-            <Button
-                title="Go back"
-                // onPress={() => navigation.goBack()}
-            />
+            <GoogleMap />
+            {/* <StyledText className="text-4xl font-bold text-blue-800 mb-4"> 
+                Hi
+            </StyledText> */}
+
             
         </View>
     )
