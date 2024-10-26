@@ -4,8 +4,6 @@ import { styled } from 'nativewind';
 
 import { StyledView, StyledText } from '../../Style/Style';
 
-// const StyledView = styled(View);
-// const StyledText = styled(Text);
 
 const Home = ({ navigation }) => {
   return (
