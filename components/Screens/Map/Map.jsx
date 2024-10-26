@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, PermissionsAndroid, Platform, Button } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { Marker, Polyline } from 'react-native-maps';
@@ -26,16 +26,16 @@ const GoogleMap = () => {
   });
 
   //purely for ploting and drawing the polyline
-  const [routeCoordinates, setRouteCoordinates] = useState([]);
+  const [routeCoordinates, setRouteCoordinates] = useState([]); //stores the decoded overview_polyview coordiantes
 
-  // directions from the response.data.routes[0].legs[0].steps
-  const [directions, setDirections] = useState([]);
+  
+  const [directions, setDirections] = useState([]); // directions from the response.data.routes[0].legs[0].steps
   const [currentStep, setCurrentStep] = useState(null); // Step-by-step directions
   const [currentStepIndex, setCurrentStepIndex] = useState(0); // Current step in directions
 
   const [zoomLevel, setZoomLevel] = useState(0.01); //control the zooming
 
-
+  const [isSkyView, setIsSkyView] = useState(true);
   
 
   const handleZoomIn = () => {
@@ -44,6 +44,10 @@ const GoogleMap = () => {
   
   const handleZoomOut = () => {
     setZoomLevel(zoomLevel * 2); // Zoom out
+  };
+
+  const toggleView = () => {
+    setIsSkyView(!isSkyView);
   };
 
   
@@ -73,6 +77,27 @@ const GoogleMap = () => {
     }
   };
 
+  const mapRef = useRef(null);
+  useEffect(() => {
+    if (directions.length > 0 && mapRef.current) {
+      const firstStep = directions[0];
+      const startLocation = firstStep.start_location;
+      const endLocation = firstStep.end_location;
+
+      const deltaY = endLocation.lat - startLocation.lat;
+      const deltaX = endLocation.lng - startLocation.lng;
+      const heading = Math.atan2(deltaY, deltaX) * (180 / Math.PI); // Convert to degrees
+
+      mapRef.current.animateCamera({
+        center: userLocation,
+        heading: heading,
+        pitch: 50,
+        altitude: 100,
+      }, { duration: 1000 });
+    }
+  }, [directions]);
+
+
 
   return (
     <View>
@@ -86,6 +111,7 @@ const GoogleMap = () => {
           longitudeDelta: zoomLevel,
         }}
         showsUserLocation={true}
+        ref={mapRef}
       >
         {/* Marker for user's current location */}
         <Marker coordinate={userLocation} title="You are here" />
@@ -113,6 +139,7 @@ const GoogleMap = () => {
         <View className="mt-2">
           <Button title="Zoom In" onPress={handleZoomIn} />
           <Button title="Zoom Out" onPress={handleZoomOut} />
+          <Button title={isSkyView ? "Switch to Zoomed View" : "Switch to Sky View"} onPress={toggleView} />
         </View>
       </View>
     )}
