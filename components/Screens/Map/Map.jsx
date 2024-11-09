@@ -14,8 +14,6 @@ import {
 } from './MapHelperFunctions';
 import { StyledView } from '../../Style/Style';
 
-const GOOGLE_MAPS_APIKEY = 'AIzaSyAv00pCzwPTtVst6swwUCQUguGi9brAU9c';
-
 const GoogleMap = () => {
 
   const [userLocation, setUserLocation] = useState({
@@ -114,7 +112,7 @@ const GoogleMap = () => {
       rotateCamera(prevHeaderDirection);
     }
   };
-  
+
   const handleZoomIn = () => {
     setZoomLevel(zoomLevel / 2); // Zoom in
   };
