@@ -1,10 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, PermissionsAndroid, Platform, Button, TouchableOpacity } from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
+import { View, Text, PermissionsAndroid, Platform, TouchableOpacity } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
-import getDirections from 'react-native-google-maps-directions';
-import { getDistance } from 'geolib';
 import axios from 'axios';
 import { 
   decode, 
@@ -12,7 +9,7 @@ import {
   calculateZoomLevel, 
   calculateHeading 
 } from './MapHelperFunctions';
-import { StyledView } from '../../Style/Style';
+import { GOOGLE_MAPS_APIKEY } from '../../../API';
 
 const GoogleMap = () => {
 

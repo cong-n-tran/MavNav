@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {Pressable, View } from "react-native";
 import { StyledText, StyledView } from "../Style/Style";
 import { Button } from "react-native";
-import GoogleMap from "./Map/Map";
+import GoogleMap from "./Map";
 
 
 const FindRoom = ({navigation}) => {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { StyledText, StyledView } from '../Style/Style';
-
+import { StyledText, StyledView } from '../../../Style/Style';
 const Setting = ({ navigation }) => {
   return (
     <StyledView className='flex-1 justify-center items-center bg-blue-50 p-6'>
