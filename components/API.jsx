@@ -1,1 +1,0 @@
-export const GOOGLE_MAPS_APIKEY = 'this shit fake as fuck';
