@@ -1,10 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, PermissionsAndroid, Platform, Button, TouchableOpacity } from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
-import MapView, { Marker, Polyline } from 'react-native-maps';
-import { PROVIDER_GOOGLE } from 'react-native-maps';
-import getDirections from 'react-native-google-maps-directions';
-import { getDistance } from 'geolib';
+import React, { useEffect, useState } from 'react';
+import { View, Text, PermissionsAndroid, Platform, TouchableOpacity } from 'react-native';
+import MapView, { Marker, Polyline, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faFlag, faPerson } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { 
   decode, 
@@ -12,18 +10,18 @@ import {
   calculateZoomLevel, 
   calculateHeading 
 } from './MapHelperFunctions';
-import { StyledView } from '../../Style/Style';
+import { GOOGLE_MAPS_APIKEY } from '../../../API';
 
-const GoogleMap = () => {
+const GoogleMap = ({startLocation, endLocation}) => {
 
   const [userLocation, setUserLocation] = useState({
-    latitude: 32.731841,  // UTA parking lot
-    longitude: -97.116840,
+    latitude: startLocation.latitude,  // UTA parking lot
+    longitude: startLocation.longitude,
   });
 
   const [destination, setDestination] = useState({
-    latitude: 32.731812, 
-    longitude: -97.113861 // geoscience building
+    latitude: endLocation.latitude, 
+    longitude: endLocation.longitude // geoscience building
   });
 
   //purely for ploting and drawing the polyline
@@ -56,7 +54,10 @@ const GoogleMap = () => {
         zoom: zoomLevel, // Set zoom to show the full route
         pitch: 0, // Set pitch for a tilted view (sky view)
       };
-      mapViewRef.current.animateCamera(camera, { duration: 1000 });
+      mapViewRef.current.fitToCoordinates([startLocation, endLocation], {
+        edgePadding: { top: 25, right: 25, bottom: 25, left: 25 },
+        animated: true,
+      });
 
       setRouteCoordinates(points);
       setDirections(directions); 
@@ -149,17 +150,21 @@ const GoogleMap = () => {
         ref={mapViewRef}
       >
         {/* Marker for user's current location */}
-        <Marker coordinate={userLocation} title="You are here" />
+        <Marker coordinate={userLocation} title="You are here">
+          <FontAwesomeIcon icon={faPerson} size={40} color="black"/>
+        </Marker>
 
         {/* Marker for destination */}
-        <Marker coordinate={destination} title="Your Destination" />
+        <Marker coordinate={destination} title="Your Destination" pinColor='black'>
+          <FontAwesomeIcon icon={faFlag} size={30} color="black"/>
+        </Marker>
 
         {/* Polyline to show the route */}
         {routeCoordinates.length > 0 && (
           <Polyline
             coordinates={routeCoordinates}
             strokeWidth={3}
-            strokeColor="blue"
+            strokeColor="#7F7FFF"
           />
         )}
       </MapView>

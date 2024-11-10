@@ -1,8 +1,7 @@
 import React, {useState} from "react";
 import { Pressable} from "react-native";
-import { Button } from "react-native";
 
-import { StyledView, StyledText } from "../Style/Style";
+import { StyledView, StyledText } from "../../Style/Style";
 
 const MainPage = ({navigation}) => {
     return (
@@ -28,6 +27,7 @@ const MainPage = ({navigation}) => {
                     },
                 ]}
             >
+                {/*  i need to add options from different starting locations to destination location */}
                 <StyledText className="text-white font-bold">
                     Find Room
                 </StyledText>

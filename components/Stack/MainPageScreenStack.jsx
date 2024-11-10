@@ -1,7 +1,7 @@
 import React from "react"
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import MainPage from "../Screens/MainPage";
-import FindRoom from "../Screens/FindRoom";
+import MainPage from "../Screens/MainPage/MainPage";
+import FindRoom from "../Screens/MainPage/Map/FindRoom";
 
 const MainPageScreenStack = () => {
     const MainPageScreen = createNativeStackNavigator();
