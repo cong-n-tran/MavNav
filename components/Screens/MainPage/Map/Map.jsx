@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, PermissionsAndroid, Platform, TouchableOpacity } from 'react-native';
-import MapView, { Marker, Polyline } from 'react-native-maps';
-import { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import axios from 'axios';
 import { 
   decode, 
@@ -53,7 +52,10 @@ const GoogleMap = ({startLocation, endLocation}) => {
         zoom: zoomLevel, // Set zoom to show the full route
         pitch: 0, // Set pitch for a tilted view (sky view)
       };
-      mapViewRef.current.animateCamera(camera, { duration: 1000 });
+      mapViewRef.current.fitToCoordinates([startLocation, endLocation], {
+        edgePadding: { top: 25, right: 25, bottom: 25, left: 25 },
+        animated: true,
+      });
 
       setRouteCoordinates(points);
       setDirections(directions); 
