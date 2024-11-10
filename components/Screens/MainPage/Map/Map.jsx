@@ -11,16 +11,16 @@ import {
 } from './MapHelperFunctions';
 import { GOOGLE_MAPS_APIKEY } from '../../../API';
 
-const GoogleMap = () => {
+const GoogleMap = ({startLocation, endLocation}) => {
 
   const [userLocation, setUserLocation] = useState({
-    latitude: 32.731841,  // UTA parking lot
-    longitude: -97.116840,
+    latitude: startLocation.latitude,  // UTA parking lot
+    longitude: startLocation.longitude,
   });
 
   const [destination, setDestination] = useState({
-    latitude: 32.731812, 
-    longitude: -97.113861 // geoscience building
+    latitude: endLocation.latitude, 
+    longitude: endLocation.longitude // geoscience building
   });
 
   //purely for ploting and drawing the polyline
