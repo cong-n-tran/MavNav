@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, PermissionsAndroid, Platform, TouchableOpacity } from 'react-native';
-import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, Polyline, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import axios from 'axios';
 import { 
   decode, 
@@ -148,7 +148,11 @@ const GoogleMap = ({startLocation, endLocation}) => {
         ref={mapViewRef}
       >
         {/* Marker for user's current location */}
-        <Marker coordinate={userLocation} title="You are here" />
+        <Marker coordinate={userLocation} title="You are here">
+          <Callout>
+            <Text>yap yap yap yap yap</Text>
+          </Callout>
+        </Marker>
 
         {/* Marker for destination */}
         <Marker coordinate={destination} title="Your Destination" />

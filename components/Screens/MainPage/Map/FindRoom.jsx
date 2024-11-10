@@ -4,6 +4,7 @@ import { Button } from "react-native";
 import GoogleMap from "./Map";
 import { Picker } from "@react-native-picker/picker";
 import { locations } from "./Locations";
+import { StyledText } from "../../../Style/Style";
 
 
 const FindRoom = ({ navigation }) => {
@@ -53,20 +54,32 @@ const FindRoom = ({ navigation }) => {
   
         <Button title="Confirm Locations" onPress={handleConfirmLocations} />
   
-        {/* Modal for GoogleMap */}
         <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-            <View className="w-full h-3/4 bg-white rounded-lg overflow-hidden shadow-lg">
-              <GoogleMap startLocation={getLocationByLabel(startLocationLabel)} endLocation={getLocationByLabel(endLocationLabel)} />
-              <Button title="Close Map" onPress={() => setModalVisible(false)} />
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)}
+            >
+            <View className="flex-1 justify-center items-center bg-black" >  
+                <View className="w-full h-0.75 bg-white rounded-lg overflow-hidden shadow-lg"> 
+                <GoogleMap 
+                    startLocation={getLocationByLabel(startLocationLabel)} 
+                    endLocation={getLocationByLabel(endLocationLabel)} 
+                />
+                <View className="absolute top-4 left-4 z-10 p-4">
+                    <Pressable 
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                    onPress={() => setModalVisible(false)}
+                    >
+                    <Text>
+                        Close
+                    </Text>
+                    </Pressable> 
+                </View>
+                </View>
             </View>
-          </View>
         </Modal>
+
       </View>
     );
   };
