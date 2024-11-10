@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, PermissionsAndroid, Platform, TouchableOpacity } from 'react-native';
 import MapView, { Marker, Polyline, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faFlag, faPerson } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { 
   decode, 
@@ -149,20 +151,20 @@ const GoogleMap = ({startLocation, endLocation}) => {
       >
         {/* Marker for user's current location */}
         <Marker coordinate={userLocation} title="You are here">
-          <Callout>
-            <Text>yap yap yap yap yap</Text>
-          </Callout>
+          <FontAwesomeIcon icon={faPerson} size={40} color="black"/>
         </Marker>
 
         {/* Marker for destination */}
-        <Marker coordinate={destination} title="Your Destination" />
+        <Marker coordinate={destination} title="Your Destination" pinColor='black'>
+          <FontAwesomeIcon icon={faFlag} size={30} color="black"/>
+        </Marker>
 
         {/* Polyline to show the route */}
         {routeCoordinates.length > 0 && (
           <Polyline
             coordinates={routeCoordinates}
             strokeWidth={3}
-            strokeColor="blue"
+            strokeColor="#7F7FFF"
           />
         )}
       </MapView>
