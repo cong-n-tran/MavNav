@@ -4,8 +4,6 @@ import { Button } from "react-native";
 import GoogleMap from "./Map";
 import { Picker } from "@react-native-picker/picker";
 import { locations } from "./Locations";
-import { StyledText } from "../../../Style/Style";
-
 
 const FindRoom = ({ navigation }) => {
     const startLabel = "MAC";
@@ -13,18 +11,19 @@ const FindRoom = ({ navigation }) => {
     const [startLocationLabel, setStartLocationLabel] = useState(startLabel);
     const [endLocationLabel, setEndLocationLabel] = useState(endLabel);
     const [modalVisible, setModalVisible] = useState(false);
+
   
-    
-  
-    const getLocationByLabel = (label) => locations.find(loc => loc.label === label)?.value;
+    const getLocationByName = (name) => locations.find(loc => loc.name === name)?.coordinates;
   
     const handleConfirmLocations = () => {
-      const startLocation = getLocationByLabel(startLocationLabel);
-      const endLocation = getLocationByLabel(endLocationLabel);
-  
+      const startLocation = getLocationByName(startLocationLabel);
+      const endLocation = getLocationByName(endLocationLabel);
       if (startLocation && endLocation) {
-        // Open the modal to show GoogleMap
-        setModalVisible(true);
+        // Navigate to the GoogleMap screen and pass the start and end locations
+        navigation.navigate('GoogleMap', {
+          startLocation: startLocation,
+          endLocation: endLocation,
+        });
       } else {
         Alert.alert("Selection Required", "Please select both start and end locations.");
       }
@@ -38,7 +37,7 @@ const FindRoom = ({ navigation }) => {
           onValueChange={(itemValue) => setStartLocationLabel(itemValue)}
         >
           {locations.map((loc, index) => (
-            <Picker.Item key={index} label={loc.label} value={loc.label} />
+            <Picker.Item key={index} label={loc.name} value={loc.name} />
           ))}
         </Picker>
   
@@ -48,13 +47,13 @@ const FindRoom = ({ navigation }) => {
           onValueChange={(itemValue) => setEndLocationLabel(itemValue)}
         >
           {locations.map((loc, index) => (
-            <Picker.Item key={index} label={loc.label} value={loc.label} />
+            <Picker.Item key={index} label={loc.name} value={loc.name} />
           ))}
         </Picker>
   
         <Button title="Confirm Locations" onPress={handleConfirmLocations} />
   
-        <Modal
+        {/* <Modal
             animationType="slide"
             transparent={true}
             visible={modalVisible}
@@ -63,8 +62,8 @@ const FindRoom = ({ navigation }) => {
             <View className="flex-1 justify-center items-center bg-black" >  
                 <View className="w-full h-0.75 bg-white rounded-lg overflow-hidden shadow-lg"> 
                 <GoogleMap 
-                    startLocation={getLocationByLabel(startLocationLabel)} 
-                    endLocation={getLocationByLabel(endLocationLabel)} 
+                    startLocation={getLocationByName(startLocationLabel)} 
+                    endLocation={getLocationByName(endLocationLabel)} 
                 />
                 <View className="absolute top-4 left-4 z-10 p-4">
                     <Pressable 
@@ -78,7 +77,7 @@ const FindRoom = ({ navigation }) => {
                 </View>
                 </View>
             </View>
-        </Modal>
+        </Modal> */}
 
       </View>
     );
