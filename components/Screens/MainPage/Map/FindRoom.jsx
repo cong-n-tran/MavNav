@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Pressable, View , Text, Modal} from "react-native";
 import { Button } from "react-native";
-import GoogleMap from "./Map";
+import GoogleMap from "./GoogleMap";
 import { Picker } from "@react-native-picker/picker";
 import { locations } from "./Locations";
 

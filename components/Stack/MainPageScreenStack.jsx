@@ -2,7 +2,7 @@ import React from "react"
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainPage from "../Screens/MainPage/MainPage";
 import FindRoom from "../Screens/MainPage/Map/FindRoom";
-import GoogleMap from "../Screens/MainPage/Map/Map";
+import GoogleMap from "../Screens/MainPage/Map/GoogleMap";
 import MACLayoutScreen from "../Screens/MainPage/Map/Buildings/MACLayoutScreen";
 import GeoscienceLayoutScreen from "../Screens/MainPage/Map/Buildings/GeoscienceLayoutScreen";
 import SEIRLayoutScreen from "../Screens/MainPage/Map/Buildings/SEIRLayoutScreen";
