@@ -1,8 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import MainPageScreenStack from './Stack/MainPageScreenStack';
-import ProfileScreenStack from './Stack/ProfileScreenStack';
-import SettingPageStack from './Stack/SettingPageStack';
+import MainPageScreenStack from '../Stack/MainPageScreenStack';
+import ProfileScreenStack from '../Stack/ProfileScreenStack';
+import SettingPageStack from '../Stack/SettingPageStack';
 
 const NavigationBar = () => {
     const Tab = createBottomTabNavigator();
