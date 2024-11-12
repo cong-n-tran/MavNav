@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import NavigationBar from './components/NavigationBar';
+import NavigationBar from './components/NavBar/NavigationBar';
 import HomeScreenStack from './components/Stack/HomeScreenStack';
 
 import 'react-native-gesture-handler';

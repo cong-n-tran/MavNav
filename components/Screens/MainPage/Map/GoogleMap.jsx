@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, PermissionsAndroid, Platform, TouchableOpacity } from 'react-native';
 import MapView, { Marker, Polyline, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faFlag, faPerson } from '@fortawesome/free-solid-svg-icons';
+import { faFlag, faPerson, faBuilding } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { 
   decode, 
@@ -11,8 +11,11 @@ import {
   calculateHeading 
 } from './MapHelperFunctions';
 import { GOOGLE_MAPS_APIKEY } from '../../../API';
+import { locations } from './Locations';
 
-const GoogleMap = ({startLocation, endLocation}) => {
+const GoogleMap = ({navigation, route}) => {
+
+  const { startLocation, endLocation } = route.params;
 
   const [userLocation, setUserLocation] = useState({
     latitude: startLocation.latitude,  // UTA parking lot
@@ -135,6 +138,10 @@ const GoogleMap = ({startLocation, endLocation}) => {
     mapViewRef.current.animateCamera(camera, { duration: 1000 }); // Optional: Adjust duration for smoothness
   };
 
+  const handleBuildingClick = (layoutScreen) => {
+    navigation.navigate(layoutScreen);
+  };
+
   return (
     <View>
       <MapView
@@ -158,6 +165,17 @@ const GoogleMap = ({startLocation, endLocation}) => {
         <Marker coordinate={destination} title="Your Destination" pinColor='black'>
           <FontAwesomeIcon icon={faFlag} size={30} color="black"/>
         </Marker>
+        {/* Marker for buildsings */}
+        {locations.map((building) => (
+          <Marker
+            key={building.id}
+            coordinate={building.coordinates}
+            title={building.name}
+            onPress={() => handleBuildingClick(building.layout)}
+          >
+            <FontAwesomeIcon icon={faBuilding} size={20} color="black" />
+          </Marker>
+        ))}
 
         {/* Polyline to show the route */}
         {routeCoordinates.length > 0 && (
