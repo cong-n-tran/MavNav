@@ -13,7 +13,7 @@ const FindRoom = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
 
   
-    const getLocationByName = (name) => locations.find(loc => loc.name === name)?.coordinates;
+    const getLocationByName = (name) => locations.find(loc => loc.name === name)?.coordinates.default;
   
     const handleConfirmLocations = () => {
       const startLocation = getLocationByName(startLocationLabel);

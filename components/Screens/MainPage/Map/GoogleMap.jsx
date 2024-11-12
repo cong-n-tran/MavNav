@@ -169,7 +169,7 @@ const GoogleMap = ({navigation, route}) => {
         {locations.map((building) => (
           <Marker
             key={building.id}
-            coordinate={building.coordinates}
+            coordinate={building.coordinates.center}
             title={building.name}
             onPress={() => handleBuildingClick(building.layout)}
           >
