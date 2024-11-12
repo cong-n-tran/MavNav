@@ -15,7 +15,7 @@ import { locations } from './Locations';
 
 const GoogleMap = ({navigation, route}) => {
 
-  const { startLocation, endLocation } = route.params;
+  const { startLocation, endLocation, endLocationLayout } = route.params;
 
   const [userLocation, setUserLocation] = useState({
     latitude: startLocation.latitude,  // UTA parking lot
@@ -65,9 +65,9 @@ const GoogleMap = ({navigation, route}) => {
       setRouteCoordinates(points);
       setDirections(directions); 
       setCurrentStep(firstStep);
-      // setMapHeading(firstStepDirection);
+
     } catch (error) {
-        console.error('Error fetching directions:', error);
+        console.error('Error fetching directions:', error); //weird erorr when first start up, may lookinto it
     }
   };
 
@@ -96,7 +96,10 @@ const GoogleMap = ({navigation, route}) => {
       });
       setMapHeading(newHeaderDirection);
       rotateCamera(newHeaderDirection);
-      
+    }
+    // going beyond the index will take you to the building layout
+    else{
+      navigation.navigate(endLocationLayout)
     }
   };
 
