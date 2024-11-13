@@ -12,17 +12,22 @@ const FindRoom = ({ navigation }) => {
     const [endLocationLabel, setEndLocationLabel] = useState(endLabel);
     const [modalVisible, setModalVisible] = useState(false);
 
-  
-    const getLocationByName = (name) => locations.find(loc => loc.name === name)?.coordinates;
+
+    // return location coordinates - default for now
+    const getLocationByName = (name) => locations.find(loc => loc.name === name)?.coordinates.default;
+
+    // return location layout
+    const getLocationLayoutByName = (name) => locations.find(loc => loc.name == name)?.layout;
   
     const handleConfirmLocations = () => {
       const startLocation = getLocationByName(startLocationLabel);
       const endLocation = getLocationByName(endLocationLabel);
+      const endLocationLayout = getLocationLayoutByName(endLocationLabel);
       if (startLocation && endLocation) {
-        // Navigate to the GoogleMap screen and pass the start and end locations
         navigation.navigate('GoogleMap', {
           startLocation: startLocation,
           endLocation: endLocation,
+          endLocationLayout: endLocationLayout,
         });
       } else {
         Alert.alert("Selection Required", "Please select both start and end locations.");
