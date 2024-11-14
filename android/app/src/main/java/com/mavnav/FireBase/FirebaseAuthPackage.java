@@ -1,4 +1,4 @@
-package com.mavnav;
+package com.mavnav.FireBase;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
