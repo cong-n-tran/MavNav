@@ -113,6 +113,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:33.3.0') // Use latest version
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-firestore'
+    implementation project(':opencv')
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
