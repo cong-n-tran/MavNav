@@ -10,6 +10,8 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
+import com.mavnav.FireBase.FirebaseAuthPackage
+import com.mavnav.ImageProcessing.ImageProcessorPackage
 
 class MainApplication : Application(), ReactApplication {
 
@@ -20,6 +22,7 @@ class MainApplication : Application(), ReactApplication {
               // Packages that cannot be autolinked yet can be added manually here, for example:
               // add(MyReactNativePackage())
                 add(FirebaseAuthPackage())
+                add(ImageProcessorPackage())
             }
 
         override fun getJSMainModuleName(): String = "index"

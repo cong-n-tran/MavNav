@@ -1,4 +1,4 @@
-package com.mavnav;
+package com.mavnav.FireBase;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
