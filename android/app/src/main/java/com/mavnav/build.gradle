@@ -1,15 +1,15 @@
 plugins {
-    id 'com.android.application'
-    id 'com.google.gms.google-services' // Ensure this is applied correctly
+    id 'com.android.application' // Required for Android apps
+    id 'com.google.gms.google-services' // Google Services plugin
 }
 
 android {
-    compileSdk 33
+    compileSdk 33 // Ensure this matches the latest SDK version you are using
 
     defaultConfig {
-        applicationId "com.mavnav"
-        minSdk 21
-        targetSdk 33
+        applicationId "com.mavnav" // Replace with your app's package name
+        minSdk 21 // Minimum supported SDK version
+        targetSdk 33 // Target SDK version
         versionCode 1
         versionName "1.0"
     }
@@ -23,7 +23,12 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.8.9' // Add Gson
-    implementation 'com.google.firebase:firebase-auth:22.0.0' // Firebase auth (if needed)
-    // Other dependencies
+    implementation 'com.google.code.gson:gson:2.8.9' // Gson for JSON handling
+    implementation 'com.google.firebase:firebase-auth:22.0.0' // Firebase Auth
+    implementation 'com.facebook.react:react-native:+'
+    // Other dependencies required for your project
 }
+
+// Ensure the Google Services plugin is applied at the bottom
+apply plugin: 'com.google.gms.google-services'
+
