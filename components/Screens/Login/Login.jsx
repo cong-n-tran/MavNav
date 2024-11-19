@@ -2,15 +2,11 @@ import React, { useState } from 'react';
 import { View, TextInput, Pressable, Text, Alert } from 'react-native';
 import { NativeModules } from 'react-native';
 import { styled } from 'nativewind';
+import Icon from 'react-native-vector-icons/EvilIcons';
 
 import { StyledView, StyledText } from '../../Style/Style';
 
 const { FirebaseAuthModule } = NativeModules;
-
-
-
-
-
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -35,14 +31,18 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <StyledView className="flex-1 justify-center items-center bg-blue-50 p-5">
-      <StyledText className="text-2xl font-bold text-blue-600 mb-6">Login</StyledText>
+    <StyledView className="flex-1 justify-start items-center bg-[#e37226] p-5">
+      <StyledView className='flex items-start justify-end w-full mt-4 ml-4'>
+          <Text onPress={() => navigation.goBack()}>Back</Text>
+      </StyledView>
+      <StyledText className="text-2xl font-bold text-blue-800 mb-4 mt-40">Login</StyledText>
+      <StyledText className="text-lg font-regular text-[#ffffff] mb-12">Welcome Back!</StyledText>
       
       <TextInput
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
-        className="border-b-2 border-blue-300 mb-4 py-2 px-2 w-full"
+        className="bg-[#F4F6FF] w-full rounded-lg font-semibold pl-4 py-4 mb-4"
         keyboardType="email-address"
       />
       
@@ -51,29 +51,29 @@ const Login = ({ navigation }) => {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        className="border-b-2 border-blue-300 mb-4 py-2 px-2 w-full"
+        className="bg-[#F4F6FF] w-full rounded-lg font-semibold pl-4 py-4 mb-4"
       />
       
       <Pressable
-        className="bg-blue-500 py-2 rounded-lg w-full mb-2"
+        className="bg-blue-800 py-4 rounded-lg w-1/2 mb-2"
         onPress={handleLogin}
       >
         <StyledText className="text-white text-center font-bold">Login</StyledText>
       </Pressable>
 
-      <Pressable
+      {/* <Pressable
         className="bg-blue-500 py-2 rounded-lg w-full mb-2"
         onPress={() => navigation.navigate('Register')}
       >
         <StyledText className="text-white text-center font-bold">Register</StyledText>
-      </Pressable>
+      </Pressable> */}
 
-      <Pressable
+      {/* <Pressable
         className="bg-gray-300 py-2 rounded-lg w-full"
         onPress={() => navigation.goBack()}
       >
         <StyledText className="text-black text-center font-bold">Go back</StyledText>
-      </Pressable>
+      </Pressable> */}
     </StyledView>
   );
 };

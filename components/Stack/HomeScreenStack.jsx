@@ -9,7 +9,7 @@ import Home from "../Screens/Login/Home";
 const HomeScreenStack = () => {
     const HomeScreen = createNativeStackNavigator();
      return (
-        <HomeScreen.Navigator>
+        <HomeScreen.Navigator screenOptions={{ headerShown: false }}>
           <HomeScreen.Screen 
             name="Home" 
             component={Home} 
