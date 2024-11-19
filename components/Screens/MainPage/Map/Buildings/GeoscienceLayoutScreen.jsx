@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, TouchableOpacity, Dimensions, StyleSheet, ActivityIndicator, Alert } from 'react-native';
-import { processFloorPlan } from '../PathFinder/PathFinderFunctions';
+import { processFloorPlan } from '../HelperFunctions/PathFinderFunctions';
 
 
 const GeoscienceLayoutScreen = ({ navigation }) => {
