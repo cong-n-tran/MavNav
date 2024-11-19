@@ -8,6 +8,9 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.Arguments; // Import Arguments
+import com.facebook.react.bridge.WritableMap; // Import WritableMap
+
 
 public class DataStoreModule extends ReactContextBaseJavaModule {
 
@@ -36,16 +39,18 @@ public class DataStoreModule extends ReactContextBaseJavaModule {
     public void getStudent(Promise promise) {
         try {
             DataProvider.Student student = dataStore.getStudentInfo();
-            promise.resolve(Arguments.createMap()
-                    .putInt("studentId", student.getStudentId())
-                    .putString("firstName", student.getFirstName())
-                    .putString("lastName", student.getLastName())
-                    .putString("email", student.getEmail())
-                    .putString("major", student.getMajor()));
+            WritableMap studentMap = Arguments.createMap(); // Create a WritableMap
+            studentMap.putInt("studentId", student.getStudentId());
+            studentMap.putString("firstName", student.getFirstName());
+            studentMap.putString("lastName", student.getLastName());
+            studentMap.putString("email", student.getEmail());
+            studentMap.putString("major", student.getMajor());
+            promise.resolve(studentMap); // Resolve with the map
         } catch (Exception e) {
             promise.reject("Error", e.getMessage());
         }
     }
+
 
     // Save Class Information
     @ReactMethod
@@ -59,16 +64,18 @@ public class DataStoreModule extends ReactContextBaseJavaModule {
     public void getClass(Promise promise) {
         try {
             DataProvider.ClassInfo classInfo = dataStore.getClassInfo();
-            promise.resolve(Arguments.createMap()
-                    .putInt("classId", classInfo.getClassId())
-                    .putString("className", classInfo.getClassName())
-                    .putString("professor", classInfo.getProfessor())
-                    .putString("capacity", classInfo.getCapacity() != null ? classInfo.getCapacity().toString() : "Unknown")
-                    .putString("location", classInfo.getLocation()));
+            WritableMap classMap = Arguments.createMap();
+            classMap.putInt("classId", classInfo.getClassId());
+            classMap.putString("className", classInfo.getClassName());
+            classMap.putString("professor", classInfo.getProfessor());
+            classMap.putString("capacity", classInfo.getCapacity() != null ? classInfo.getCapacity().toString() : "Unknown");
+            classMap.putString("location", classInfo.getLocation());
+            promise.resolve(classMap);
         } catch (Exception e) {
             promise.reject("Error", e.getMessage());
         }
     }
+
 
     // Save Event Information
     @ReactMethod
@@ -81,15 +88,17 @@ public class DataStoreModule extends ReactContextBaseJavaModule {
     public void getEvent(Promise promise) {
         try {
             DataProvider.Event event = dataStore.getEventInfo();
-            promise.resolve(Arguments.createMap()
-                    .putString("name", event.getName())
-                    .putString("location", event.getLocation())
-                    .putString("dateAndTime", event.getDateAndTime())
-                    .putString("description", event.getDescription()));
+            WritableMap eventMap = Arguments.createMap();
+            eventMap.putString("name", event.getName());
+            eventMap.putString("location", event.getLocation());
+            eventMap.putString("dateAndTime", event.getDateAndTime());
+            eventMap.putString("description", event.getDescription());
+            promise.resolve(eventMap);
         } catch (Exception e) {
             promise.reject("Error", e.getMessage());
         }
     }
+
 
     // Clear All Data
     @ReactMethod

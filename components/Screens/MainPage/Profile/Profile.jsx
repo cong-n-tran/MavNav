@@ -9,7 +9,7 @@ import {
     StyledTextProfile, 
     StyledViewProfile, 
     LogoutButton
-} from '../Style/Style';
+} from '../../../Style/Style';
 
 const { DataStore } = NativeModules;
 
