@@ -9,7 +9,7 @@ import {
   haversine, 
   calculateZoomLevel, 
   calculateHeading 
-} from './MapHelperFunctions';
+} from './HelperFunctions/MapHelperFunctions';
 import { GOOGLE_MAPS_APIKEY } from '../../../API';
 import { buildingLocations } from './Locations/BuildingLocations';
 
@@ -50,13 +50,6 @@ const GoogleMap = ({navigation, route}) => {
       // const firstStepDirection = calculateHeading(firstStep.start_location, firstStep.end_location)
       const distance = haversine(userLocation.latitude, userLocation.longitude, destination.latitude, destination.longitude);
 
-      const zoomLevel = calculateZoomLevel(distance);
-      // Set the camera to show the full route initially
-      const camera = {
-        center: { latitude: (userLocation.latitude + destination.latitude) / 2, longitude: (userLocation.longitude + destination.longitude) / 2 },
-        zoom: zoomLevel, // Set zoom to show the full route
-        pitch: 0, // Set pitch for a tilted view (sky view)
-      };
       mapViewRef.current.fitToCoordinates([startLocation, endLocation], {
         edgePadding: { top: 25, right: 25, bottom: 25, left: 25 },
         animated: true,
@@ -127,8 +120,6 @@ const GoogleMap = ({navigation, route}) => {
   const handleZoomOut = () => {
     setZoomLevel(zoomLevel * 2); // Zoom out
   };
-
-  
 
   const rotateCamera = (heading) => {
     const camera = {
