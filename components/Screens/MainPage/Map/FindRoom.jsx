@@ -3,26 +3,31 @@ import {Pressable, View , Text, Modal} from "react-native";
 import { Button } from "react-native";
 import GoogleMap from "./GoogleMap";
 import { Picker } from "@react-native-picker/picker";
-import { locations } from "./Locations";
+import { buildingLocations, getBuildingLocationByName, getBuildingLayoutByName } from "./Locations/BuildingLocations";
+import { parkingLocations, getParkingLocationByName, getParkingLayoutByName } from "./Locations/ParkingLocations";
 
 const FindRoom = ({ navigation }) => {
-    const startLabel = "MAC";
-    const endLabel = "Geoscience Building";
+    const startLabel = "MAC"; // defaults
+    const endLabel = "Geoscience Building"; //default
+
     const [startLocationLabel, setStartLocationLabel] = useState(startLabel);
     const [endLocationLabel, setEndLocationLabel] = useState(endLabel);
-    const [modalVisible, setModalVisible] = useState(false);
 
-
-    // return location coordinates - default for now
-    const getLocationByName = (name) => locations.find(loc => loc.name === name)?.coordinates.default;
-
-    // return location layout
-    const getLocationLayoutByName = (name) => locations.find(loc => loc.name == name)?.layout;
-  
     const handleConfirmLocations = () => {
-      const startLocation = getLocationByName(startLocationLabel);
-      const endLocation = getLocationByName(endLocationLabel);
-      const endLocationLayout = getLocationLayoutByName(endLocationLabel);
+      var startLocation = getBuildingLocationByName(startLocationLabel);
+      var endLocation = getBuildingLocationByName(endLocationLabel);
+      var endLocationLayout = getBuildingLayoutByName(endLocationLabel);
+      
+      if (!startLocation){
+        startLocation = getParkingLocationByName(startLocationLabel);
+      } 
+      if (!endLocation){
+        endLocation = getParkingLocationByName(endLocationLabel);
+      } 
+      if (!endLocationLayout){
+        endLocationLayout = getParkingLayoutByName(endLocationLabel);
+      } 
+
       if (startLocation && endLocation) {
         navigation.navigate('GoogleMap', {
           startLocation: startLocation,
@@ -41,7 +46,10 @@ const FindRoom = ({ navigation }) => {
           selectedValue={startLocationLabel}
           onValueChange={(itemValue) => setStartLocationLabel(itemValue)}
         >
-          {locations.map((loc, index) => (
+          {buildingLocations.map((loc, index) => (
+            <Picker.Item key={index} label={loc.name} value={loc.name} />
+          ))}
+          {parkingLocations.map((loc, index) => (
             <Picker.Item key={index} label={loc.name} value={loc.name} />
           ))}
         </Picker>
@@ -51,7 +59,10 @@ const FindRoom = ({ navigation }) => {
           selectedValue={endLocationLabel}
           onValueChange={(itemValue) => setEndLocationLabel(itemValue)}
         >
-          {locations.map((loc, index) => (
+          {buildingLocations.map((loc, index) => (
+            <Picker.Item key={index} label={loc.name} value={loc.name} />
+          ))}
+          {parkingLocations.map((loc, index) => (
             <Picker.Item key={index} label={loc.name} value={loc.name} />
           ))}
         </Picker>

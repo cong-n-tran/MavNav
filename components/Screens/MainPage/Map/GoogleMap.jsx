@@ -11,7 +11,7 @@ import {
   calculateHeading 
 } from './MapHelperFunctions';
 import { GOOGLE_MAPS_APIKEY } from '../../../API';
-import { locations } from './Locations';
+import { buildingLocations } from './Locations/BuildingLocations';
 
 const GoogleMap = ({navigation, route}) => {
 
@@ -169,7 +169,7 @@ const GoogleMap = ({navigation, route}) => {
           <FontAwesomeIcon icon={faFlag} size={30} color="black"/>
         </Marker>
         {/* Marker for buildsings */}
-        {locations.map((building) => (
+        {buildingLocations.map((building) => (
           <Marker
             key={building.id}
             coordinate={building.coordinates.center}
