@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
+import com.mavnav.DataStorePackage;
 
 public class Profile {
 
@@ -70,6 +71,11 @@ public class Profile {
         events.put("event2", new Event("Homecoming", "somewhere", "September 1st, 2024", "yap feast yap feast yap feast yap feast"));
     }
 
-
+    @Override
+    protected List<ReactPackage> getPackages() {
+        return Arrays.<ReactPackage>asList(
+                new MainReactPackage(),
+                new DataStorePackage() // Register your package here
+        );
 
 }

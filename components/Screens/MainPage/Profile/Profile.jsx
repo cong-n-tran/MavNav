@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import {ScrollView, Pressable} from 'react-native';
-import auth from '@react-native-firebase/auth';
+import React, { useState, useEffect } from 'react';
+import { ScrollView, View, Text, Pressable, Button } from 'react-native';
+import { NativeModules } from 'react-native';
 import { 
     StyledText, 
     StyledView, 
@@ -9,271 +9,114 @@ import {
     StyledTextProfile, 
     StyledViewProfile, 
     LogoutButton
-  } from '../../../Style/Style';
+} from '../Style/Style';
 
+const { DataStore } = NativeModules;
 
-const Profile = ({ navigation }) => {
-    const logoutUser = () => {
-        auth().signOut()
-        .then(() => {
-            console.log('User logged out');
-        })
-        .catch(error => {
-            console.error('Error during logout:', error);
-        });
-    };
+const Profile = () => {
+    const [student, setStudent] = useState(null);
+    const [classInfo, setClassInfo] = useState(null);
+    const [event, setEvent] = useState(null);
 
-    const [student, setStudent] = useState({
-        studentId: 1002006000,
-        firstName: 'George',
-        lastName: 'Washington',
-        email: null, 
-        major: 'Computer Science',
-    });
-    const [classes, setClasses] = useState({
-        'class1': {
-            classId: 1,
-            className: 'Physics',
-            classProfessor: 'Spurlock',
-            classCapacity: null, 
-            classLocation: 'SH 101',
-        }, 
-        'class2' :{
-            classId: 2,
-            className: 'Calculus',
-            classProfessor: 'Yang',
-            classCapacity: null, 
-            classLocation: 'SEIR 217',
-        }, 
-        'class3' :{
-            classId: 3,
-            className: 'Pols',
-            classProfessor: 'Berry',
-            classCapacity: null, 
-            classLocation: 'WH 309',
-        }, 
-        'class4' :{
-            classId: 4,
-            className: 'Economics',
-            classProfessor: 'Jobs',
-            classCapacity: null, 
-            classLocation: 'NH 102',
-        }, 
-
-    });
-    const [events, setEvents] = useState({
-        'event1' : {
-            eventName: 'Super Saturday', 
-            eventLocation: 'somewhere', 
-            eventDateAndTime: 'October 21st, 2024', 
-            eventDescription: 'yap feast yap feast yap feast yap feast', 
-        },
-        'event2' : {
-            eventName: 'Homecoming', 
-            eventLocation: 'somewhere', 
-            eventDateAndTime: 'September 1st, 2024', 
-            eventDescription: 'yap feast yap feast yap feast yap feast', 
-        },
-    });
-      
+    // Fetch data from native module
     useEffect(() => {
-        const getCurrentUserEmail = () => {
-        const user = auth().currentUser;
-        if (user) {
-            return user.email;
-        }
-        return null;
-        };
-    
-        const email = getCurrentUserEmail();
-        if (email) {
-        setStudent((prev) => ({ ...prev, email }));
-        } else {
-        console.log("No user is currently signed in.");
-        }
+        // Fetch student information
+        DataStore.getStudent()
+            .then(data => setStudent(data))
+            .catch(err => console.error("Error fetching student:", err));
+
+        // Fetch class information
+        DataStore.getClass()
+            .then(data => setClassInfo(data))
+            .catch(err => console.error("Error fetching class:", err));
+
+        // Fetch event information
+        DataStore.getEvent()
+            .then(data => setEvent(data))
+            .catch(err => console.error("Error fetching event:", err));
     }, []);
 
-    const addClass = () => {
-        const newClassId = `class${Object.keys(classes).length + 1}`;
-        setClasses({
-            ...classes,
-            [newClassId]: {
-                classId: Object.keys(classes).length + 1,
-                className: 'New Class',
-                classProfessor: 'New Professor',
-                classCapacity: null,
-                classLocation: 'Unknown'
-            }
-        });
+    const saveStudentData = () => {
+        // Save new student data to native module
+        DataStore.saveStudent(1003007000, "John", "Doe", "john.doe@example.com", "Mathematics");
     };
 
-    const editClass = (classKey, updatedClass) => {
-        setClasses({
-            ...classes,
-            [classKey]: updatedClass
-        });
+    const saveClassData = () => {
+        // Save new class data to native module
+        DataStore.saveClass(1, "Physics", "Dr. Smith", "50", "Room 101");
     };
 
-    const removeClass = (classKey) => {
-        const updatedClasses = { ...classes };
-        delete updatedClasses[classKey];
-        setClasses(updatedClasses);
-    };
-
-    const addEvent = () => {
-        const newEventKey = `event${Object.keys(events).length + 1}`;
-        setEvents({
-            ...events,
-            [newEventKey]: {
-                eventName: 'New Event',
-                eventLocation: 'New Location',
-                eventDateAndTime: 'New Date',
-                eventDescription: 'New Description'
-            }
-        });
-    };
-
-    const editEvent = (eventKey, updatedEvent) => {
-        setEvents({
-            ...events,
-            [eventKey]: updatedEvent
-        });
-    };
-
-    const removeEvent = (eventKey) => {
-        const updatedEvents = { ...events };
-        delete updatedEvents[eventKey];
-        setEvents(updatedEvents);
+    const saveEventData = () => {
+        // Save new event data to native module
+        DataStore.saveEvent("Tech Talk", "Main Auditorium", "March 15th, 2024", "A talk about the latest tech trends.");
     };
 
     return (
-        <ScrollView decelerationRate="normal">
-            <StyledView className='flex-1 justify-center bg-blue-50 p-6'>
-                <StyledText className="text-4xl font-bold text-blue-800 mb-4">
-                    Classes
-                </StyledText>
-                <ProfileContainer>
-                    <ProfileColumn>
-                        {Object.entries(classes).map(([key, classInfo]) => (
-                            <StyledView key={classInfo.classId}>
-                                <StyledText className="text-lg text-gray-700 mb-6">
-                                    {classInfo.className}
-                                </StyledText>
-                                <StyledTextProfile>Class Id: {classInfo.classId}</StyledTextProfile>
-                                <StyledTextProfile>Class Name: {classInfo.className}</StyledTextProfile>
-                                <StyledTextProfile>Class Professor: {classInfo.classProfessor}</StyledTextProfile>
-                                <StyledTextProfile>Class capacity: {classInfo.classCapacity}</StyledTextProfile>
-                                <StyledTextProfile>Class Location: {classInfo.classLocation}</StyledTextProfile>
-                                <StyledView>
-                                    <Pressable onPress={() => setEditingClass(key)}>
-                                        <StyledText className="text-green-500">Edit</StyledText>
-                                    </Pressable>
-                                    <Pressable onPress={() => removeClass(key)}>
-                                        <StyledText className="text-red-500">Remove</StyledText>
-                                    </Pressable>
-                                </StyledView>
-                                {editingClass === key && (
-                                    <StyledView>
-                                        <TextInput
-                                            placeholder="Edit Class Name"
-                                            defaultValue={classInfo.className}
-                                            onChangeText={(text) =>
-                                                editClass(key, { ...classInfo, className: text })
-                                            }
-                                            style={{
-                                                borderWidth: 1,
-                                                borderColor: '#ccc',
-                                                padding: 10,
-                                                marginBottom: 10,
-                                            }}
-                                        />
-                                        <Pressable
-                                            onPress={() =>
-                                                editClass(key, {
-                                                    ...classInfo,
-                                                    className: classInfo.className,
-                                                })
-                                            }
-                                        >
-                                            <StyledText className="text-blue-500">Save</StyledText>
-                                        </Pressable>
-                                    </StyledView>
-                                )}
-                            </StyledView>
-                        ))}
-                        <Pressable onPress={addClass}>
-                            <StyledText className="text-blue-500">Add Class</StyledText>
-                        </Pressable>
-                    </ProfileColumn>
-                </ProfileContainer>
-                <LogoutButton onPress={logoutUser}>
-                    <StyledText>Logout</StyledText>
-                </LogoutButton>
-            </StyledView>
-        </ScrollView>
-    );
-    
-    /*return (
-        <ScrollView decelerationRate="normal">
-            <StyledView className='flex-1 justify-center bg-blue-50 p-6'>
+        <ScrollView>
+            <StyledView className="flex-1 justify-center bg-blue-50 p-6">
+                {/* Student Section */}
                 <StyledText className="text-4xl font-bold text-blue-800 mb-4">
                     Student
                 </StyledText>
                 <ProfileContainer>
-                    <ProfileColumn>
-                    <StyledTextProfile>Student ID: {student.studentId}</StyledTextProfile>
-                    <StyledTextProfile>First Name: {student.firstName}</StyledTextProfile>
-                    <StyledTextProfile>Last Name: {student.lastName}</StyledTextProfile>
-                    <StyledTextProfile>Email: {student.email}</StyledTextProfile>
-                    <StyledTextProfile>Major: {student.major}</StyledTextProfile>
-                    </ProfileColumn>
+                    {student ? (
+                        <ProfileColumn>
+                            <StyledTextProfile>Student ID: {student.studentId}</StyledTextProfile>
+                            <StyledTextProfile>First Name: {student.firstName}</StyledTextProfile>
+                            <StyledTextProfile>Last Name: {student.lastName}</StyledTextProfile>
+                            <StyledTextProfile>Email: {student.email}</StyledTextProfile>
+                            <StyledTextProfile>Major: {student.major}</StyledTextProfile>
+                        </ProfileColumn>
+                    ) : (
+                        <StyledText>Loading Student Info...</StyledText>
+                    )}
                 </ProfileContainer>
+                <Button title="Save Student Data" onPress={saveStudentData} />
+
+                {/* Class Section */}
                 <StyledText className="text-4xl font-bold text-blue-800 mb-4">
                     Classes
                 </StyledText>
                 <ProfileContainer>
-                    <ProfileColumn>
-                        {Object.entries(classes).map(([key, classInfo]) => (  
-                        <StyledView key={classInfo.classId}>  
-                            <StyledText className="text-lg text-gray-700 mb-6">
-                                {classInfo.className}
-                            </StyledText>
-                            <StyledTextProfile>Class Id: {classInfo.classId}</StyledTextProfile>
+                    {classInfo ? (
+                        <ProfileColumn>
+                            <StyledTextProfile>Class ID: {classInfo.classId}</StyledTextProfile>
                             <StyledTextProfile>Class Name: {classInfo.className}</StyledTextProfile>
-                            <StyledTextProfile>Class Professor: {classInfo.classProfessor}</StyledTextProfile>
-                            <StyledTextProfile>Class capacity: {classInfo.classCapacity}</StyledTextProfile>
-                            <StyledTextProfile>Class Location: {classInfo.classLocation}</StyledTextProfile>
-                        </StyledView> 
-                        ))}
-                    </ProfileColumn>
+                            <StyledTextProfile>Professor: {classInfo.professor}</StyledTextProfile>
+                            <StyledTextProfile>Capacity: {classInfo.capacity}</StyledTextProfile>
+                            <StyledTextProfile>Location: {classInfo.location}</StyledTextProfile>
+                        </ProfileColumn>
+                    ) : (
+                        <StyledText>Loading Class Info...</StyledText>
+                    )}
                 </ProfileContainer>
+                <Button title="Save Class Data" onPress={saveClassData} />
+
+                {/* Event Section */}
                 <StyledText className="text-4xl font-bold text-blue-800 mb-4">
                     Events
                 </StyledText>
                 <ProfileContainer>
-                    <ProfileColumn>
-                        {Object.entries(events).map(([key, eventInfo]) => (  
-                        <StyledView key={eventInfo.eventName}>  
-                            <StyledText className="text-lg text-gray-700 mb-6">
-                                {eventInfo.eventName}
-                            </StyledText>
-                            <StyledTextProfile>Event Name: {eventInfo.eventName}</StyledTextProfile>
-                            <StyledTextProfile>Event Location: {eventInfo.eventLocation}</StyledTextProfile>
-                            <StyledTextProfile>Event Date & Time: {eventInfo.eventDateAndTime}</StyledTextProfile>
-                            <StyledTextProfile>Event Description: {eventInfo.eventDescription}</StyledTextProfile>
-                        </StyledView> 
-                        ))}
-                    </ProfileColumn>
+                    {event ? (
+                        <ProfileColumn>
+                            <StyledTextProfile>Event Name: {event.name}</StyledTextProfile>
+                            <StyledTextProfile>Location: {event.location}</StyledTextProfile>
+                            <StyledTextProfile>Date & Time: {event.dateAndTime}</StyledTextProfile>
+                            <StyledTextProfile>Description: {event.description}</StyledTextProfile>
+                        </ProfileColumn>
+                    ) : (
+                        <StyledText>Loading Event Info...</StyledText>
+                    )}
                 </ProfileContainer>
-                <LogoutButton  className= 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full' onPress={logoutUser} >
-                    <StyledText className='text-white font-bold'>
-                        login out!
-                    </StyledText>
+                <Button title="Save Event Data" onPress={saveEventData} />
+
+                {/* Clear Data */}
+                <LogoutButton onPress={() => DataStore.clearAllData()}>
+                    <StyledText className="text-white font-bold">Clear All Data</StyledText>
                 </LogoutButton>
             </StyledView>
         </ScrollView>
-    );*/
+    );
 };
-
 
 export default Profile;

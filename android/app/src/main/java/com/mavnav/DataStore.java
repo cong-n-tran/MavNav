@@ -1,202 +1,83 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+package com.mavnav;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 
 public class DataStore {
 
-    // Inner classes for data structures
-    public static class Student {
-        private int studentId;
-        private String firstName;
-        private String lastName;
-        private String email;
-        private String major;
+    private static final String PREF_NAME = "app_data";
+    private SharedPreferences sharedPreferences;
 
-        // Constructor
-        public Student(int studentId, String firstName, String lastName, String email, String major) {
-            this.studentId = studentId;
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.email = email;
-            this.major = major;
-        }
-
-        // Getters and Setters
-        public int getStudentId() {
-            return studentId;
-        }
-
-        public void setStudentId(int studentId) {
-            this.studentId = studentId;
-        }
-
-        public String getFirstName() {
-            return firstName;
-        }
-
-        public void setFirstName(String firstName) {
-            this.firstName = firstName;
-        }
-
-        public String getLastName() {
-            return lastName;
-        }
-
-        public void setLastName(String lastName) {
-            this.lastName = lastName;
-        }
-
-        public String getMajor() {
-            return major;
-        }
-
-        public void setMajor(String major) {
-            this.major = major;
-        }
+    public DataStore(Context context) {
+        this.sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
-    public static class ClassInfo {
-        private int classId;
-        private String className;
-        private String professor;
-        private Integer capacity;
-        private String location;
-
-        // Constructor
-        public ClassInfo(int classId, String className, String professor, Integer capacity, String location) {
-            this.classId = classId;
-            this.className = className;
-            this.professor = professor;
-            this.capacity = capacity;
-            this.location = location;
-        }
-
-        // Getters and Setters
-        public int getClassId() {
-            return classId;
-        }
-
-        public void setClassId(int classId) {
-            this.classId = classId;
-        }
-
-        public String getClassName() {
-            return className;
-        }
-
-        public void setClassName(String className) {
-            this.className = className;
-        }
-
-        public String getProfessor() {
-            return professor;
-        }
-
-        public void setProfessor(String professor) {
-            this.professor = professor;
-        }
-
-        public Integer getCapacity() {
-            return capacity;
-        }
-
-        public void setCapacity(Integer capacity) {
-            this.capacity = capacity;
-        }
-
-        public String getLocation() {
-            return location;
-        }
-
-        public void setLocation(String location) {
-            this.location = location;
-        }
+    // Save Student Information
+    public void saveStudentInfo(int studentId, String firstName, String lastName, String email, String major) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("student_id", studentId);
+        editor.putString("student_first_name", firstName);
+        editor.putString("student_last_name", lastName);
+        editor.putString("student_email", email);
+        editor.putString("student_major", major);
+        editor.apply();
     }
 
-    public static class Event {
-        private String name;
-        private String location;
-        private String dateAndTime;
-        private String description;
-
-        // Constructor
-        public Event(String name, String location, String dateAndTime, String description) {
-            this.name = name;
-            this.location = location;
-            this.dateAndTime = dateAndTime;
-            this.description = description;
-        }
-
-        // Getters and Setters
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getLocation() {
-            return location;
-        }
-
-        public void setLocation(String location) {
-            this.location = location;
-        }
-
-        public String getDateAndTime() {
-            return dateAndTime;
-        }
-
-        public void setDateAndTime(String dateAndTime) {
-            this.dateAndTime = dateAndTime;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
+    // Retrieve Student Information
+    public DataProvider.Student getStudentInfo() {
+        int studentId = sharedPreferences.getInt("student_id", -1);
+        String firstName = sharedPreferences.getString("student_first_name", "Unknown");
+        String lastName = sharedPreferences.getString("student_last_name", "Unknown");
+        String email = sharedPreferences.getString("student_email", "Unknown");
+        String major = sharedPreferences.getString("student_major", "Undeclared");
+        return new DataProvider.Student(studentId, firstName, lastName, email, major);
     }
 
-    // Storage
-    private Student student;
-    private Map<Integer, ClassInfo> classes = new HashMap<>();
-    private List<Event> events = new ArrayList<>();
-
-    // Methods for managing the data
-    public void setStudent(Student student) {
-        this.student = student;
+    // Save Class Information
+    public void saveClassInfo(int classId, String className, String professor, Integer capacity, String location) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("class_id", classId);
+        editor.putString("class_name", className);
+        editor.putString("class_professor", professor);
+        editor.putString("class_capacity", capacity != null ? capacity.toString() : "Unknown");
+        editor.putString("class_location", location);
+        editor.apply();
     }
 
-    public Student getStudent() {
-        return student;
+    // Retrieve Class Information
+    public DataProvider.ClassInfo getClassInfo() {
+        int classId = sharedPreferences.getInt("class_id", -1);
+        String className = sharedPreferences.getString("class_name", "Unknown");
+        String professor = sharedPreferences.getString("class_professor", "Unknown");
+        String capacityStr = sharedPreferences.getString("class_capacity", "Unknown");
+        String location = sharedPreferences.getString("class_location", "Unknown");
+        Integer capacity = capacityStr.equals("Unknown") ? null : Integer.parseInt(capacityStr);
+        return new DataProvider.ClassInfo(classId, className, professor, capacity, location);
     }
 
-    public void addClass(ClassInfo classInfo) {
-        classes.put(classInfo.getClassId(), classInfo);
+    // Save Event Information
+    public void saveEventInfo(String name, String location, String dateAndTime, String description) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("event_name", name);
+        editor.putString("event_location", location);
+        editor.putString("event_date_time", dateAndTime);
+        editor.putString("event_description", description);
+        editor.apply();
     }
 
-    public void removeClass(int classId) {
-        classes.remove(classId);
+    // Retrieve Event Information
+    public DataProvider.Event getEventInfo() {
+        String name = sharedPreferences.getString("event_name", "Unknown");
+        String location = sharedPreferences.getString("event_location", "Unknown");
+        String dateAndTime = sharedPreferences.getString("event_date_time", "Unknown");
+        String description = sharedPreferences.getString("event_description", "No description");
+        return new DataProvider.Event(name, location, dateAndTime, description);
     }
 
-    public Map<Integer, ClassInfo> getClasses() {
-        return classes;
-    }
-
-    public void addEvent(Event event) {
-        events.add(event);
-    }
-
-    public void removeEvent(Event event) {
-        events.remove(event);
-    }
-
-    public List<Event> getEvents() {
-        return events;
+    // Clear All Data
+    public void clearAllData() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
     }
 }
