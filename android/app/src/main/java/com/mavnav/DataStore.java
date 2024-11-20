@@ -1,83 +1,69 @@
 package com.mavnav;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DataStore {
 
-    private static final String PREF_NAME = "app_data";
-    private SharedPreferences sharedPreferences;
+    private static DataStore instance;
 
-    public DataStore(Context context) {
-        this.sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+    // Example lists for storing class and event information
+    private final List<DataProvider.ClassInfo> classes;
+    private final List<DataProvider.Event> events;
+
+    // Private constructor for Singleton pattern
+    private DataStore() {
+        classes = new ArrayList<>();
+        events = new ArrayList<>();
+
+        // Initialize with some sample data (optional)
+        initializeSampleData();
     }
 
-    // Save Student Information
-    public void saveStudentInfo(int studentId, String firstName, String lastName, String email, String major) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("student_id", studentId);
-        editor.putString("student_first_name", firstName);
-        editor.putString("student_last_name", lastName);
-        editor.putString("student_email", email);
-        editor.putString("student_major", major);
-        editor.apply();
+    // Singleton instance
+    public static synchronized DataStore getInstance() {
+        if (instance == null) {
+            instance = new DataStore();
+        }
+        return instance;
     }
 
-    // Retrieve Student Information
-    public DataProvider.Student getStudentInfo() {
-        int studentId = sharedPreferences.getInt("student_id", -1);
-        String firstName = sharedPreferences.getString("student_first_name", "Unknown");
-        String lastName = sharedPreferences.getString("student_last_name", "Unknown");
-        String email = sharedPreferences.getString("student_email", "Unknown");
-        String major = sharedPreferences.getString("student_major", "Undeclared");
-        return new DataProvider.Student(studentId, firstName, lastName, email, major);
+    // Initialize with sample data (optional)
+    private void initializeSampleData() {
+        classes.add(new DataProvider.ClassInfo(1, "Physics", "Dr. Spurlock", 30, "Room 101"));
+        classes.add(new DataProvider.ClassInfo(2, "Mathematics", "Dr. Yang", 50, "Room 202"));
+
+        events.add(new DataProvider.Event("Tech Talk", "Main Auditorium", "2024-01-15 10:00 AM", "Learn about the latest tech trends."));
+        events.add(new DataProvider.Event("Career Fair", "Expo Center", "2024-03-10 9:00 AM", "Meet top companies and explore job opportunities."));
     }
 
-    // Save Class Information
-    public void saveClassInfo(int classId, String className, String professor, Integer capacity, String location) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("class_id", classId);
-        editor.putString("class_name", className);
-        editor.putString("class_professor", professor);
-        editor.putString("class_capacity", capacity != null ? capacity.toString() : "Unknown");
-        editor.putString("class_location", location);
-        editor.apply();
+    // Get the list of classes
+    public List<DataProvider.ClassInfo> getClasses() {
+        return new ArrayList<>(classes); // Return a copy to avoid modification
     }
 
-    // Retrieve Class Information
-    public DataProvider.ClassInfo getClassInfo() {
-        int classId = sharedPreferences.getInt("class_id", -1);
-        String className = sharedPreferences.getString("class_name", "Unknown");
-        String professor = sharedPreferences.getString("class_professor", "Unknown");
-        String capacityStr = sharedPreferences.getString("class_capacity", "Unknown");
-        String location = sharedPreferences.getString("class_location", "Unknown");
-        Integer capacity = capacityStr.equals("Unknown") ? null : Integer.parseInt(capacityStr);
-        return new DataProvider.ClassInfo(classId, className, professor, capacity, location);
+    // Get the list of events
+    public List<DataProvider.Event> getEvents() {
+        return new ArrayList<>(events); // Return a copy to avoid modification
     }
 
-    // Save Event Information
-    public void saveEventInfo(String name, String location, String dateAndTime, String description) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("event_name", name);
-        editor.putString("event_location", location);
-        editor.putString("event_date_time", dateAndTime);
-        editor.putString("event_description", description);
-        editor.apply();
+    // Add a class
+    public void addClass(DataProvider.ClassInfo classInfo) {
+        classes.add(classInfo);
     }
 
-    // Retrieve Event Information
-    public DataProvider.Event getEventInfo() {
-        String name = sharedPreferences.getString("event_name", "Unknown");
-        String location = sharedPreferences.getString("event_location", "Unknown");
-        String dateAndTime = sharedPreferences.getString("event_date_time", "Unknown");
-        String description = sharedPreferences.getString("event_description", "No description");
-        return new DataProvider.Event(name, location, dateAndTime, description);
+    // Add an event
+    public void addEvent(DataProvider.Event event) {
+        events.add(event);
     }
 
-    // Clear All Data
-    public void clearAllData() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+    // Remove a class by ID
+    public boolean removeClass(int classId) {
+        return classes.removeIf(classInfo -> classInfo.getClassId() == classId);
+    }
+
+    // Remove an event by name
+    public boolean removeEvent(String eventName) {
+        return events.removeIf(event -> event.getName().equalsIgnoreCase(eventName));
     }
 }

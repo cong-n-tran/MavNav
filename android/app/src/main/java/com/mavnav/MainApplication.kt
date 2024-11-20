@@ -17,9 +17,9 @@ class MainApplication : Application(), ReactApplication {
     object : DefaultReactNativeHost(this) {
       override fun getPackages(): List<ReactPackage> =
         PackageList(this).packages.apply {
-          // Manually add your custom packages here
+          // Add your custom packages manually
           add(DataStorePackage()) // Add the DataStorePackage manually
-          add(FirebaseAuthPackage()) // Example of another package
+          add(FirebaseAuthPackage()) // Add FirebaseAuthPackage or other packages if needed
         }
 
       override fun getJSMainModuleName(): String = "index"

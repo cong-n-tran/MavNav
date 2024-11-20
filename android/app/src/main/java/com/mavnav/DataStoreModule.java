@@ -1,16 +1,14 @@
 package com.mavnav;
 
-import android.content.Context;
-
-import androidx.annotation.NonNull;
-
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.Arguments; // Import Arguments
-import com.facebook.react.bridge.WritableMap; // Import WritableMap
+import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableMap;
 
+import java.util.List;
 
 public class DataStoreModule extends ReactContextBaseJavaModule {
 
@@ -18,91 +16,109 @@ public class DataStoreModule extends ReactContextBaseJavaModule {
 
     public DataStoreModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        Context context = reactContext.getApplicationContext();
-        this.dataStore = new DataStore(context); // Initialize DataStore with context
+        this.dataStore = DataStore.getInstance(); // Singleton instance of DataStore
     }
 
-    @NonNull
     @Override
     public String getName() {
-        return "DataStore"; // Name of the module to be used in JavaScript
+        return "DataStore"; // Exposed module name
     }
 
-    // Save Student Information
+    // Fetch all classes
     @ReactMethod
-    public void saveStudent(int studentId, String firstName, String lastName, String email, String major) {
-        dataStore.saveStudentInfo(studentId, firstName, lastName, email, major);
-    }
-
-    // Retrieve Student Information
-    @ReactMethod
-    public void getStudent(Promise promise) {
+    public void getClasses(Promise promise) {
         try {
-            DataProvider.Student student = dataStore.getStudentInfo();
-            WritableMap studentMap = Arguments.createMap(); // Create a WritableMap
-            studentMap.putInt("studentId", student.getStudentId());
-            studentMap.putString("firstName", student.getFirstName());
-            studentMap.putString("lastName", student.getLastName());
-            studentMap.putString("email", student.getEmail());
-            studentMap.putString("major", student.getMajor());
-            promise.resolve(studentMap); // Resolve with the map
+            List<DataProvider.ClassInfo> classes = dataStore.getClasses();
+            WritableArray classArray = Arguments.createArray();
+
+            for (DataProvider.ClassInfo classInfo : classes) {
+                WritableMap classMap = Arguments.createMap();
+                classMap.putInt("classId", classInfo.getClassId());
+                classMap.putString("className", classInfo.getClassName());
+                classMap.putString("professor", classInfo.getProfessor());
+                classMap.putString("capacity", classInfo.getCapacity() != null ? classInfo.getCapacity().toString() : "Unknown");
+                classMap.putString("location", classInfo.getLocation());
+                classArray.pushMap(classMap);
+            }
+
+            promise.resolve(classArray);
         } catch (Exception e) {
             promise.reject("Error", e.getMessage());
         }
     }
 
-
-    // Save Class Information
+    // Fetch all events
     @ReactMethod
-    public void saveClass(int classId, String className, String professor, String capacity, String location) {
-        Integer cap = capacity.equals("Unknown") ? null : Integer.parseInt(capacity);
-        dataStore.saveClassInfo(classId, className, professor, cap, location);
-    }
-
-    // Retrieve Class Information
-    @ReactMethod
-    public void getClass(Promise promise) {
+    public void getEvents(Promise promise) {
         try {
-            DataProvider.ClassInfo classInfo = dataStore.getClassInfo();
-            WritableMap classMap = Arguments.createMap();
-            classMap.putInt("classId", classInfo.getClassId());
-            classMap.putString("className", classInfo.getClassName());
-            classMap.putString("professor", classInfo.getProfessor());
-            classMap.putString("capacity", classInfo.getCapacity() != null ? classInfo.getCapacity().toString() : "Unknown");
-            classMap.putString("location", classInfo.getLocation());
-            promise.resolve(classMap);
+            List<DataProvider.Event> events = dataStore.getEvents();
+            WritableArray eventArray = Arguments.createArray();
+
+            for (DataProvider.Event event : events) {
+                WritableMap eventMap = Arguments.createMap();
+                eventMap.putString("name", event.getName());
+                eventMap.putString("location", event.getLocation());
+                eventMap.putString("dateAndTime", event.getDateAndTime());
+                eventMap.putString("description", event.getDescription());
+                eventArray.pushMap(eventMap);
+            }
+
+            promise.resolve(eventArray);
         } catch (Exception e) {
             promise.reject("Error", e.getMessage());
         }
     }
 
-
-    // Save Event Information
+    // Add a new class
     @ReactMethod
-    public void saveEvent(String name, String location, String dateAndTime, String description) {
-        dataStore.saveEventInfo(name, location, dateAndTime, description);
-    }
-
-    // Retrieve Event Information
-    @ReactMethod
-    public void getEvent(Promise promise) {
+    public void addClass(int classId, String className, String professor, String capacity, String location, Promise promise) {
         try {
-            DataProvider.Event event = dataStore.getEventInfo();
-            WritableMap eventMap = Arguments.createMap();
-            eventMap.putString("name", event.getName());
-            eventMap.putString("location", event.getLocation());
-            eventMap.putString("dateAndTime", event.getDateAndTime());
-            eventMap.putString("description", event.getDescription());
-            promise.resolve(eventMap);
+            Integer cap = capacity.equals("Unknown") ? null : Integer.parseInt(capacity);
+            dataStore.addClass(new DataProvider.ClassInfo(classId, className, professor, cap, location));
+            promise.resolve("Class added successfully");
         } catch (Exception e) {
             promise.reject("Error", e.getMessage());
         }
     }
 
-
-    // Clear All Data
+    // Add a new event
     @ReactMethod
-    public void clearAllData() {
-        dataStore.clearAllData();
+    public void addEvent(String name, String location, String dateAndTime, String description, Promise promise) {
+        try {
+            dataStore.addEvent(new DataProvider.Event(name, location, dateAndTime, description));
+            promise.resolve("Event added successfully");
+        } catch (Exception e) {
+            promise.reject("Error", e.getMessage());
+        }
+    }
+
+    // Remove a class by ID
+    @ReactMethod
+    public void removeClass(int classId, Promise promise) {
+        try {
+            boolean removed = dataStore.removeClass(classId);
+            if (removed) {
+                promise.resolve("Class removed successfully");
+            } else {
+                promise.reject("Error", "Class not found");
+            }
+        } catch (Exception e) {
+            promise.reject("Error", e.getMessage());
+        }
+    }
+
+    // Remove an event by name
+    @ReactMethod
+    public void removeEvent(String eventName, Promise promise) {
+        try {
+            boolean removed = dataStore.removeEvent(eventName);
+            if (removed) {
+                promise.resolve("Event removed successfully");
+            } else {
+                promise.reject("Error", "Event not found");
+            }
+        } catch (Exception e) {
+            promise.reject("Error", e.getMessage());
+        }
     }
 }
