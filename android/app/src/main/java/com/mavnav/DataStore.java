@@ -7,7 +7,8 @@ public class DataStore {
 
     private static DataStore instance;
 
-    // Example lists for storing class and event information
+    // Example data structures for storing student, classes, and events
+    private DataProvider.Student student;
     private final List<DataProvider.ClassInfo> classes;
     private final List<DataProvider.Event> events;
 
@@ -16,7 +17,7 @@ public class DataStore {
         classes = new ArrayList<>();
         events = new ArrayList<>();
 
-        // Initialize with some sample data (optional)
+        // Initialize with sample data
         initializeSampleData();
     }
 
@@ -28,13 +29,34 @@ public class DataStore {
         return instance;
     }
 
-    // Initialize with sample data (optional)
+    // Initialize sample data (optional)
     private void initializeSampleData() {
+        // Initialize student
+        student = new DataProvider.Student(
+                100200300,
+                "Jane",
+                "Doe",
+                "jane.doe@example.com",
+                "Computer Science"
+        );
+
+        // Initialize sample classes
         classes.add(new DataProvider.ClassInfo(1, "Physics", "Dr. Spurlock", 30, "Room 101"));
         classes.add(new DataProvider.ClassInfo(2, "Mathematics", "Dr. Yang", 50, "Room 202"));
 
+        // Initialize sample events
         events.add(new DataProvider.Event("Tech Talk", "Main Auditorium", "2024-01-15 10:00 AM", "Learn about the latest tech trends."));
         events.add(new DataProvider.Event("Career Fair", "Expo Center", "2024-03-10 9:00 AM", "Meet top companies and explore job opportunities."));
+    }
+
+    // Get the student's information
+    public DataProvider.Student getStudentInfo() {
+        return student;
+    }
+
+    // Set the student's information (optional if editing is needed)
+    public void setStudentInfo(DataProvider.Student newStudent) {
+        this.student = newStudent;
     }
 
     // Get the list of classes

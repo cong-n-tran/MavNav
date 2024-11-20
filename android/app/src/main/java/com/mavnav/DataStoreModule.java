@@ -28,7 +28,7 @@ public class DataStoreModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getClasses(Promise promise) {
         try {
-            List<DataProvider.ClassInfo> classes = dataStore.getClasses();
+            List<DataProvider.ClassInfo> classes = dataStore.getClasses(); // Fetch classes from DataStore
             WritableArray classArray = Arguments.createArray();
 
             for (DataProvider.ClassInfo classInfo : classes) {
@@ -51,7 +51,7 @@ public class DataStoreModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getEvents(Promise promise) {
         try {
-            List<DataProvider.Event> events = dataStore.getEvents();
+            List<DataProvider.Event> events = dataStore.getEvents(); // Fetch events from DataStore
             WritableArray eventArray = Arguments.createArray();
 
             for (DataProvider.Event event : events) {
@@ -64,6 +64,23 @@ public class DataStoreModule extends ReactContextBaseJavaModule {
             }
 
             promise.resolve(eventArray);
+        } catch (Exception e) {
+            promise.reject("Error", e.getMessage());
+        }
+    }
+
+    // Fetch student information
+    @ReactMethod
+    public void getStudent(Promise promise) {
+        try {
+            DataProvider.Student student = dataStore.getStudentInfo(); // Fetch student from DataStore
+            WritableMap studentMap = Arguments.createMap();
+            studentMap.putInt("studentId", student.getStudentId());
+            studentMap.putString("firstName", student.getFirstName());
+            studentMap.putString("lastName", student.getLastName());
+            studentMap.putString("email", student.getEmail());
+            studentMap.putString("major", student.getMajor());
+            promise.resolve(studentMap);
         } catch (Exception e) {
             promise.reject("Error", e.getMessage());
         }
