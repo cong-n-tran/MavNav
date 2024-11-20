@@ -1,25 +1,24 @@
-package com.mavnav;
+package com.mavnav.ImageProcessing;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
-import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-
+import com.facebook.react.bridge.ReactApplicationContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FirebaseAuthPackage implements ReactPackage {
+public class ImageProcessorPackage implements ReactPackage {
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new FirebaseAuthModule(reactContext)); // Register FirebaseAuthModule
+        modules.add(new ImageProcessorModule(reactContext)); // Add your module here
         return modules;
     }
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        return Collections.emptyList(); // No custom view managers
+        return Collections.emptyList(); // No custom view managers for now
     }
 }

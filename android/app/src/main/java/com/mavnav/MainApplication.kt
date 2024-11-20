@@ -10,10 +10,13 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
+import com.mavnav.FireBase.FirebaseAuthPackage
+import com.mavnav.ImageProcessing.ImageProcessorPackage
 
 class MainApplication : Application(), ReactApplication {
 
   override val reactNativeHost: ReactNativeHost =
+<<<<<<< HEAD
     object : DefaultReactNativeHost(this) {
       override fun getPackages(): List<ReactPackage> =
         PackageList(this).packages.apply {
@@ -21,6 +24,16 @@ class MainApplication : Application(), ReactApplication {
           add(DataStorePackage()) // Add the DataStorePackage manually
           add(FirebaseAuthPackage()) // Add FirebaseAuthPackage or other packages if needed
         }
+=======
+      object : DefaultReactNativeHost(this) {
+        override fun getPackages(): List<ReactPackage> =
+            PackageList(this).packages.apply {
+              // Packages that cannot be autolinked yet can be added manually here, for example:
+              // add(MyReactNativePackage())
+                add(FirebaseAuthPackage())
+                add(ImageProcessorPackage())
+            }
+>>>>>>> develop
 
       override fun getJSMainModuleName(): String = "index"
 
