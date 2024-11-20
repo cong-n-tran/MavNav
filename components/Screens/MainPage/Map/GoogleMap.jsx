@@ -47,8 +47,6 @@ const GoogleMap = ({navigation, route}) => {
       const points = decode(response.data.routes[0].overview_polyline.points);
       const directions = response.data.routes[0].legs[0].steps;
       const firstStep = directions[0];
-      // const firstStepDirection = calculateHeading(firstStep.start_location, firstStep.end_location)
-      const distance = haversine(userLocation.latitude, userLocation.longitude, destination.latitude, destination.longitude);
 
       mapViewRef.current.fitToCoordinates([startLocation, endLocation], {
         edgePadding: { top: 25, right: 25, bottom: 25, left: 25 },
@@ -161,14 +159,36 @@ const GoogleMap = ({navigation, route}) => {
         </Marker>
         {/* Marker for buildsings */}
         {buildingLocations.map((building) => (
-          <Marker
-            key={building.id}
-            coordinate={building.coordinates.center}
-            title={building.name}
-            onPress={() => handleBuildingClick(building.layout)}
-          >
-            <FontAwesomeIcon icon={faBuilding} size={20} color="black" />
-          </Marker>
+          <View>
+            <Marker
+              key={building.id}
+              coordinate={building.coordinates.center}
+              title={building.name}
+              onPress={() => handleBuildingClick(building.layout)}
+            >
+              <FontAwesomeIcon icon={faBuilding} size={20} color="black" />
+            </Marker>
+            <Marker
+              key={51}
+              coordinate={building.coordinates.entries.north}
+              title={building.name}
+            />
+            <Marker
+              key={52}
+              coordinate={building.coordinates.entries.south}
+              title={building.name}
+            />
+            <Marker
+              key={53}
+              coordinate={building.coordinates.entries.west}
+              title={building.name}
+            />
+            <Marker
+              key={54}
+              coordinate={building.coordinates.entries.east}
+              title={building.name}
+            />
+          </View>
         ))}
 
         {/* Polyline to show the route */}

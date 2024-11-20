@@ -6,6 +6,7 @@ import GoogleMap from "../Screens/MainPage/Map/GoogleMap";
 import MACLayoutScreen from "../Screens/MainPage/Map/Buildings/MACLayoutScreen";
 import GeoscienceLayoutScreen from "../Screens/MainPage/Map/Buildings/GeoscienceLayoutScreen";
 import SEIRLayoutScreen from "../Screens/MainPage/Map/Buildings/SEIRLayoutScreen";
+import ScienceHallLayoutScreen from "../Screens/MainPage/Map/Buildings/ScienceHallLayoutScreen";
 
 const MainPageScreenStack = () => {
     const MainPageScreen = createNativeStackNavigator();
@@ -34,6 +35,10 @@ const MainPageScreenStack = () => {
           <MainPageScreen.Screen 
             name="SEIRLayoutScreen" 
             component={SEIRLayoutScreen} 
+          />
+          <MainPageScreen.Screen 
+            name="ScienceHallLayoutScreen" 
+            component={ScienceHallLayoutScreen} 
           />
 
         </MainPageScreen.Navigator>

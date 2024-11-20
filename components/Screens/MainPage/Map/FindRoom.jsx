@@ -1,10 +1,11 @@
 import React, {useState} from "react";
-import {Pressable, View , Text, Modal} from "react-native";
+import {Pressable, View , Text, Modal, Alert} from "react-native";
 import { Button } from "react-native";
 import GoogleMap from "./GoogleMap";
 import { Picker } from "@react-native-picker/picker";
 import { buildingLocations, getBuildingLocationByName, getBuildingLayoutByName } from "./Locations/BuildingLocations";
 import { parkingLocations, getParkingLocationByName, getParkingLayoutByName } from "./Locations/ParkingLocations";
+import { calculateDistance, closestEntry } from "./HelperFunctions/MapHelperFunctions";
 
 const FindRoom = ({ navigation }) => {
     const startLabel = "MAC"; // defaults
@@ -14,23 +15,32 @@ const FindRoom = ({ navigation }) => {
     const [endLocationLabel, setEndLocationLabel] = useState(endLabel);
 
     const handleConfirmLocations = () => {
-      var startLocation = getBuildingLocationByName(startLocationLabel);
-      var endLocation = getBuildingLocationByName(endLocationLabel);
+      //return an hashmap
+      var startCoordinates = getBuildingLocationByName(startLocationLabel);
+      var endCoordinates = getBuildingLocationByName(endLocationLabel);
+
+      //no need to change
       var endLocationLayout = getBuildingLayoutByName(endLocationLabel);
       
-      if (!startLocation){
-        startLocation = getParkingLocationByName(startLocationLabel);
+      if (!startCoordinates){
+        startCoordinates = getParkingLocationByName(startLocationLabel);
       } 
-      if (!endLocation){
-        endLocation = getParkingLocationByName(endLocationLabel);
+      if (!endCoordinates){
+        endCoordinates = getParkingLocationByName(endLocationLabel);
       } 
       if (!endLocationLayout){
         endLocationLayout = getParkingLayoutByName(endLocationLabel);
       } 
+      var endLocation = endCoordinates.default
+      
+      // building map then entries > 0 else it is parking then entries == 0 
+      if ((Object.keys(endCoordinates.entries).length > 0)){
+        endLocation = closestEntry(startCoordinates.default, endCoordinates.entries).coordinates;
+      }
 
-      if (startLocation && endLocation) {
+      if (startCoordinates && endLocation) {
         navigation.navigate('GoogleMap', {
-          startLocation: startLocation,
+          startLocation: startCoordinates.default, // the start positon will always be static 
           endLocation: endLocation,
           endLocationLayout: endLocationLayout,
         });

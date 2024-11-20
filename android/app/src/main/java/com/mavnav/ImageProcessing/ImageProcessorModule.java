@@ -34,7 +34,7 @@ public class ImageProcessorModule extends ReactContextBaseJavaModule {
         try {
             // Check if the image exists at the given path
             AssetManager assetManager = getReactApplicationContext().getAssets();
-            InputStream inputStream = assetManager.open("images/GS147.png");
+            InputStream inputStream = assetManager.open(imagePath);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
             if (bitmap == null) {

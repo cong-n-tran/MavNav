@@ -31,19 +31,40 @@ export const decode = (t, e = 5) => {
 };
 
 // tbh idek what this is, i just found it on google
-export const haversine = (lat1, lon1, lat2, lon2) => {
-  const R = 6371; // Radius of Earth in km
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
+export const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const toRadians = (degrees) => (degrees * Math.PI) / 180;
+  const R = 6371e3; // Earth's radius in meters
+
+  const φ1 = toRadians(lat1);
+  const φ2 = toRadians(lat2);
+  const Δφ = toRadians(lat2 - lat1);
+  const Δλ = toRadians(lon2 - lon1);
+
   const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) *
-      Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c; // Distance in km
-  return distance;
-};
+
+  return R * c; // Distance in meters
+}
+export const closestEntry = (currentLocation, buildingEntries) => {
+  let closestEntry = null;
+  let shortestDistance = Infinity;
+  for (const [entryName, entryCoordinates] of Object.entries(buildingEntries)) {
+    const distance = calculateDistance(
+      currentLocation.latitude,
+      currentLocation.longitude,
+      entryCoordinates.latitude,
+      entryCoordinates.longitude
+    );
+  
+    if (distance < shortestDistance) {
+      shortestDistance = distance;
+      closestEntry = { name: entryName, coordinates: entryCoordinates };
+    }
+  }
+  return closestEntry
+}
 // use to adjust the zoomlevel, given input
 export const calculateZoomLevel = (distance) => {
   if (distance < 0.5) return 16; // Close up, zoom in more
