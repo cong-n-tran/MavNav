@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, Button, TextInput, Pressable, Modal, StyleSheet } from 'react-native';
 import { NativeModules } from 'react-native';
-import { 
-    StyledText, 
-    StyledView, 
-    StyledTextProfile 
-} from '../../../Style/Style';
+import { StyledText, StyledView, StyledTextProfile } from '../../../Style/Style';
 
 const { DataStore } = NativeModules;
 
@@ -34,11 +30,13 @@ const Profile = () => {
             .catch(err => console.error("Error fetching classes:", err));
 
         DataStore.getEvents()
-            .then(data => setEvents(data))
+            .then(data => {
+                console.log("Fetched events:", data);
+                setEvents(data);
+            })
             .catch(err => console.error("Error fetching events:", err));
     }, []);
 
-    // Add Class
     const handleAddClass = () => {
         DataStore.addClass(
             newClassData.classId,
@@ -54,7 +52,20 @@ const Profile = () => {
             .catch(err => console.error("Error adding class:", err));
     };
 
-    // Edit Class
+    const handleAddEvent = () => {
+        DataStore.addEvent(
+            newEventData.name,
+            newEventData.location,
+            newEventData.dateAndTime,
+            newEventData.description
+        )
+            .then(() => {
+                setEvents([...events, newEventData]);
+                setIsAddingEvent(false);
+            })
+            .catch(err => console.error("Error adding event:", err));
+    };
+
     const handleEditClass = () => {
         DataStore.addClass(
             editClassData.classId,
@@ -73,7 +84,23 @@ const Profile = () => {
             .catch(err => console.error("Error editing class:", err));
     };
 
-    // Remove Class
+    const handleEditEvent = () => {
+        DataStore.addEvent(
+            editEventData.name,
+            editEventData.location,
+            editEventData.dateAndTime,
+            editEventData.description
+        )
+            .then(() => {
+                const updatedEvents = events.map(e =>
+                    e.name === editEventData.name ? editEventData : e
+                );
+                setEvents(updatedEvents);
+                setIsEditingEvent(false);
+            })
+            .catch(err => console.error("Error editing event:", err));
+    };
+
     const handleRemoveClass = (classId) => {
         DataStore.removeClass(classId)
             .then(() => {
@@ -81,6 +108,15 @@ const Profile = () => {
                 setClasses(filteredClasses);
             })
             .catch(err => console.error("Error removing class:", err));
+    };
+
+    const handleRemoveEvent = (name) => {
+        DataStore.removeEvent(name)
+            .then(() => {
+                const filteredEvents = events.filter(e => e.name !== name);
+                setEvents(filteredEvents);
+            })
+            .catch(err => console.error("Error removing event:", err));
     };
 
     return (
@@ -130,15 +166,43 @@ const Profile = () => {
                     )}
                 </View>
 
-                {/* Add and Edit Modals */}
+                {/* Events Section */}
+                <StyledText style={styles.headerText}>Events</StyledText>
+                <Button title="Add Event" onPress={() => setIsAddingEvent(true)} />
+                <View style={styles.verticalList}>
+                    {events.length > 0 ? (
+                        events.map((eventItem, index) => (
+                            <View key={index} style={styles.itemContainer}>
+                                <StyledTextProfile>Event Name: {eventItem.name}</StyledTextProfile>
+                                <StyledTextProfile>Location: {eventItem.location}</StyledTextProfile>
+                                <StyledTextProfile>Date & Time: {eventItem.dateAndTime}</StyledTextProfile>
+                                <StyledTextProfile>Description: {eventItem.description}</StyledTextProfile>
+                                <View style={styles.actionButtons}>
+                                    <Pressable onPress={() => {
+                                        setEditEventData(eventItem);
+                                        setIsEditingEvent(true);
+                                    }}>
+                                        <Text style={styles.editButton}>Edit</Text>
+                                    </Pressable>
+                                    <Pressable onPress={() => handleRemoveEvent(eventItem.name)}>
+                                        <Text style={styles.removeButton}>Remove</Text>
+                                    </Pressable>
+                                </View>
+                            </View>
+                        ))
+                    ) : (
+                        <StyledText>No Events Available</StyledText>
+                    )}
+                </View>
+
+                {/* Add/Edit Modals for Classes and Events */}
                 <Modal visible={isAddingClass} transparent animationType="slide">
                     <View style={styles.modalContainer}>
                         <Text style={styles.modalTitle}>Add New Class</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Class ID"
-                            keyboardType="numeric"
-                            onChangeText={(text) => setNewClassData({ ...newClassData, classId: parseInt(text) })}
+                            onChangeText={(text) => setNewClassData({ ...newClassData, classId: text })}
                         />
                         <TextInput
                             style={styles.input}
@@ -153,7 +217,6 @@ const Profile = () => {
                         <TextInput
                             style={styles.input}
                             placeholder="Capacity"
-                            keyboardType="numeric"
                             onChangeText={(text) => setNewClassData({ ...newClassData, capacity: text })}
                         />
                         <TextInput
@@ -166,15 +229,42 @@ const Profile = () => {
                     </View>
                 </Modal>
 
+                <Modal visible={isAddingEvent} transparent animationType="slide">
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.modalTitle}>Add New Event</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Event Name"
+                            onChangeText={(text) => setNewEventData({ ...newEventData, name: text })}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Location"
+                            onChangeText={(text) => setNewEventData({ ...newEventData, location: text })}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Date & Time"
+                            onChangeText={(text) => setNewEventData({ ...newEventData, dateAndTime: text })}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Description"
+                            onChangeText={(text) => setNewEventData({ ...newEventData, description: text })}
+                        />
+                        <Button title="Save" onPress={handleAddEvent} />
+                        <Button title="Cancel" onPress={() => setIsAddingEvent(false)} />
+                    </View>
+                </Modal>
+
                 <Modal visible={isEditingClass} transparent animationType="slide">
                     <View style={styles.modalContainer}>
                         <Text style={styles.modalTitle}>Edit Class</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Class ID"
-                            keyboardType="numeric"
-                            value={editClassData.classId ? String(editClassData.classId) : ""}
-                            onChangeText={(text) => setEditClassData({ ...editClassData, classId: parseInt(text) })}
+                            value={editClassData.classId}
+                            onChangeText={(text) => setEditClassData({ ...editClassData, classId: text })}
                         />
                         <TextInput
                             style={styles.input}
@@ -202,6 +292,38 @@ const Profile = () => {
                         />
                         <Button title="Save" onPress={handleEditClass} />
                         <Button title="Cancel" onPress={() => setIsEditingClass(false)} />
+                    </View>
+                </Modal>
+
+                <Modal visible={isEditingEvent} transparent animationType="slide">
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.modalTitle}>Edit Event</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Event Name"
+                            value={editEventData.name}
+                            onChangeText={(text) => setEditEventData({ ...editEventData, name: text })}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Location"
+                            value={editEventData.location}
+                            onChangeText={(text) => setEditEventData({ ...editEventData, location: text })}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Date & Time"
+                            value={editEventData.dateAndTime}
+                            onChangeText={(text) => setEditEventData({ ...editEventData, dateAndTime: text })}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Description"
+                            value={editEventData.description}
+                            onChangeText={(text) => setEditEventData({ ...editEventData, description: text })}
+                        />
+                        <Button title="Save" onPress={handleEditEvent} />
+                        <Button title="Cancel" onPress={() => setIsEditingEvent(false)} />
                     </View>
                 </Modal>
             </StyledView>

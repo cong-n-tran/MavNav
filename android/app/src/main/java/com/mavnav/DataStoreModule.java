@@ -1,12 +1,12 @@
 package com.mavnav;
 
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.Arguments;
 
 import java.util.List;
 
@@ -16,45 +16,56 @@ public class DataStoreModule extends ReactContextBaseJavaModule {
 
     public DataStoreModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        this.dataStore = DataStore.getInstance(); // Singleton instance of DataStore
+        this.dataStore = DataStore.getInstance();
     }
 
     @Override
     public String getName() {
-        return "DataStore"; // Exposed module name
+        return "DataStore";
     }
 
-    // Fetch all classes
     @ReactMethod
-    public void getClasses(Promise promise) {
+    public void getStudent(Promise promise) {
         try {
-            List<DataProvider.ClassInfo> classes = dataStore.getClasses(); // Fetch classes from DataStore
-            WritableArray classArray = Arguments.createArray();
-
-            for (DataProvider.ClassInfo classInfo : classes) {
-                WritableMap classMap = Arguments.createMap();
-                classMap.putInt("classId", classInfo.getClassId());
-                classMap.putString("className", classInfo.getClassName());
-                classMap.putString("professor", classInfo.getProfessor());
-                classMap.putString("capacity", classInfo.getCapacity() != null ? classInfo.getCapacity().toString() : "Unknown");
-                classMap.putString("location", classInfo.getLocation());
-                classArray.pushMap(classMap);
-            }
-
-            promise.resolve(classArray);
+            DataStore.Student student = dataStore.getStudent(); // Fetch student from DataStore
+            WritableMap studentMap = Arguments.createMap();
+            studentMap.putString("studentId", student.getStudentId());
+            studentMap.putString("firstName", student.getFirstName());
+            studentMap.putString("lastName", student.getLastName());
+            studentMap.putString("email", student.getEmail());
+            studentMap.putString("major", student.getMajor());
+            promise.resolve(studentMap);
         } catch (Exception e) {
-            promise.reject("Error", e.getMessage());
+            promise.reject("GET_STUDENT_ERROR", "Failed to get student information.", e);
         }
     }
 
-    // Fetch all events
+    @ReactMethod
+    public void getClasses(Promise promise) {
+        try {
+            List<DataStore.ClassInfo> classes = dataStore.getClasses(); // Fetch classes from DataStore
+            WritableArray classArray = Arguments.createArray();
+            for (DataStore.ClassInfo classInfo : classes) {
+                WritableMap classMap = Arguments.createMap();
+                classMap.putString("classId", classInfo.getClassId());
+                classMap.putString("className", classInfo.getClassName());
+                classMap.putString("professor", classInfo.getProfessor());
+                classMap.putString("capacity", classInfo.getCapacity());
+                classMap.putString("location", classInfo.getLocation());
+                classArray.pushMap(classMap);
+            }
+            promise.resolve(classArray);
+        } catch (Exception e) {
+            promise.reject("GET_CLASSES_ERROR", "Failed to get classes.", e);
+        }
+    }
+
     @ReactMethod
     public void getEvents(Promise promise) {
         try {
-            List<DataProvider.Event> events = dataStore.getEvents(); // Fetch events from DataStore
+            List<DataStore.Event> events = dataStore.getEvents(); // Fetch events from DataStore
             WritableArray eventArray = Arguments.createArray();
-
-            for (DataProvider.Event event : events) {
+            for (DataStore.Event event : events) {
                 WritableMap eventMap = Arguments.createMap();
                 eventMap.putString("name", event.getName());
                 eventMap.putString("location", event.getLocation());
@@ -62,80 +73,49 @@ public class DataStoreModule extends ReactContextBaseJavaModule {
                 eventMap.putString("description", event.getDescription());
                 eventArray.pushMap(eventMap);
             }
-
             promise.resolve(eventArray);
         } catch (Exception e) {
-            promise.reject("Error", e.getMessage());
+            promise.reject("GET_EVENTS_ERROR", "Failed to get events.", e);
         }
     }
 
-    // Fetch student information
     @ReactMethod
-    public void getStudent(Promise promise) {
+    public void addClass(String classId, String className, String professor, String capacity, String location, Promise promise) {
         try {
-            DataProvider.Student student = dataStore.getStudentInfo(); // Fetch student from DataStore
-            WritableMap studentMap = Arguments.createMap();
-            studentMap.putInt("studentId", student.getStudentId());
-            studentMap.putString("firstName", student.getFirstName());
-            studentMap.putString("lastName", student.getLastName());
-            studentMap.putString("email", student.getEmail());
-            studentMap.putString("major", student.getMajor());
-            promise.resolve(studentMap);
+            dataStore.addClass(classId, className, professor, capacity, location);
+            promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("Error", e.getMessage());
+            promise.reject("ADD_CLASS_ERROR", "Failed to add class.", e);
         }
     }
 
-    // Add a new class
-    @ReactMethod
-    public void addClass(int classId, String className, String professor, String capacity, String location, Promise promise) {
-        try {
-            Integer cap = capacity.equals("Unknown") ? null : Integer.parseInt(capacity);
-            dataStore.addClass(new DataProvider.ClassInfo(classId, className, professor, cap, location));
-            promise.resolve("Class added successfully");
-        } catch (Exception e) {
-            promise.reject("Error", e.getMessage());
-        }
-    }
-
-    // Add a new event
     @ReactMethod
     public void addEvent(String name, String location, String dateAndTime, String description, Promise promise) {
         try {
-            dataStore.addEvent(new DataProvider.Event(name, location, dateAndTime, description));
-            promise.resolve("Event added successfully");
+            dataStore.addEvent(name, location, dateAndTime, description);
+            promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("Error", e.getMessage());
+            promise.reject("ADD_EVENT_ERROR", "Failed to add event.", e);
         }
     }
 
-    // Remove a class by ID
     @ReactMethod
-    public void removeClass(int classId, Promise promise) {
+    public void removeClass(String classId, Promise promise) {
         try {
-            boolean removed = dataStore.removeClass(classId);
-            if (removed) {
-                promise.resolve("Class removed successfully");
-            } else {
-                promise.reject("Error", "Class not found");
-            }
+            dataStore.removeClass(classId);
+            promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("Error", e.getMessage());
+            promise.reject("REMOVE_CLASS_ERROR", "Failed to remove class.", e);
         }
     }
 
-    // Remove an event by name
     @ReactMethod
-    public void removeEvent(String eventName, Promise promise) {
+    public void removeEvent(String name, Promise promise) {
         try {
-            boolean removed = dataStore.removeEvent(eventName);
-            if (removed) {
-                promise.resolve("Event removed successfully");
-            } else {
-                promise.reject("Error", "Event not found");
-            }
+            dataStore.removeEvent(name);
+            promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("Error", e.getMessage());
+            promise.reject("REMOVE_EVENT_ERROR", "Failed to remove event.", e);
         }
     }
 }

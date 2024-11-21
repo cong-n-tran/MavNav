@@ -6,22 +6,11 @@ import java.util.List;
 public class DataStore {
 
     private static DataStore instance;
+    private Student student;
+    private List<ClassInfo> classes;
+    private List<Event> events;
 
-    // Example data structures for storing student, classes, and events
-    private DataProvider.Student student;
-    private final List<DataProvider.ClassInfo> classes;
-    private final List<DataProvider.Event> events;
-
-    // Private constructor for Singleton pattern
-    private DataStore() {
-        classes = new ArrayList<>();
-        events = new ArrayList<>();
-
-        // Initialize with sample data
-        initializeSampleData();
-    }
-
-    // Singleton instance
+    // Singleton instance of DataStore
     public static synchronized DataStore getInstance() {
         if (instance == null) {
             instance = new DataStore();
@@ -29,63 +18,173 @@ public class DataStore {
         return instance;
     }
 
-    // Initialize sample data (optional)
-    private void initializeSampleData() {
-        // Initialize student
-        student = new DataProvider.Student(
-                100200300,
-                "Jane",
-                "Doe",
-                "jane.doe@example.com",
-                "Computer Science"
-        );
-
-        // Initialize sample classes
-        classes.add(new DataProvider.ClassInfo(1, "Physics", "Dr. Spurlock", 30, "Room 101"));
-        classes.add(new DataProvider.ClassInfo(2, "Mathematics", "Dr. Yang", 50, "Room 202"));
-
-        // Initialize sample events
-        events.add(new DataProvider.Event("Tech Talk", "Main Auditorium", "2024-01-15 10:00 AM", "Learn about the latest tech trends."));
-        events.add(new DataProvider.Event("Career Fair", "Expo Center", "2024-03-10 9:00 AM", "Meet top companies and explore job opportunities."));
+    private DataStore() {
+        classes = new ArrayList<>();
+        events = new ArrayList<>();
+        student = new Student("12345", "John", "Doe", "john.doe@example.com", "Computer Science");
     }
 
-    // Get the student's information
-    public DataProvider.Student getStudentInfo() {
+    // Student Class
+    public static class Student {
+        private String studentId;
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String major;
+
+        public Student(String studentId, String firstName, String lastName, String email, String major) {
+            this.studentId = studentId;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.email = email;
+            this.major = major;
+        }
+
+        public String getStudentId() {
+            return studentId;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getMajor() {
+            return major;
+        }
+    }
+
+    // ClassInfo Class
+    public static class ClassInfo {
+        private String classId; // Updated to String
+        private String className;
+        private String professor;
+        private String capacity;
+        private String location;
+
+        public ClassInfo(String classId, String className, String professor, String capacity, String location) {
+            this.classId = classId;
+            this.className = className;
+            this.professor = professor;
+            this.capacity = capacity;
+            this.location = location;
+        }
+
+        public String getClassId() {
+            return classId;
+        }
+
+        public String getClassName() {
+            return className;
+        }
+
+        public String getProfessor() {
+            return professor;
+        }
+
+        public String getCapacity() {
+            return capacity;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+    }
+
+    // Event Class
+    public static class Event {
+        private String name;
+        private String location;
+        private String dateAndTime;
+        private String description;
+
+        public Event(String name, String location, String dateAndTime, String description) {
+            this.name = name;
+            this.location = location;
+            this.dateAndTime = dateAndTime;
+            this.description = description;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public String getDateAndTime() {
+            return dateAndTime;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+    }
+
+    // Getter for Student
+    public Student getStudent() {
         return student;
     }
 
-    // Set the student's information (optional if editing is needed)
-    public void setStudentInfo(DataProvider.Student newStudent) {
-        this.student = newStudent;
+    // Getters for Classes
+    public List<ClassInfo> getClasses() {
+        return classes;
     }
 
-    // Get the list of classes
-    public List<DataProvider.ClassInfo> getClasses() {
-        return new ArrayList<>(classes); // Return a copy to avoid modification
-    }
-
-    // Get the list of events
-    public List<DataProvider.Event> getEvents() {
-        return new ArrayList<>(events); // Return a copy to avoid modification
-    }
-
-    // Add a class
-    public void addClass(DataProvider.ClassInfo classInfo) {
+    // Add a Class
+    public void addClass(String classId, String className, String professor, String capacity, String location) {
+        ClassInfo classInfo = new ClassInfo(classId, className, professor, capacity, location);
         classes.add(classInfo);
     }
 
-    // Add an event
-    public void addEvent(DataProvider.Event event) {
+    // Edit a Class
+    public void editClass(String classId, String className, String professor, String capacity, String location) {
+        for (ClassInfo classInfo : classes) {
+            if (classInfo.getClassId().equals(classId)) {
+                classes.remove(classInfo);
+                classes.add(new ClassInfo(classId, className, professor, capacity, location));
+                return;
+            }
+        }
+    }
+
+    // Remove a Class
+    public void removeClass(String classId) {
+        classes.removeIf(classInfo -> classInfo.getClassId().equals(classId));
+    }
+
+    // Getters for Events
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    // Add an Event
+    public void addEvent(String name, String location, String dateAndTime, String description) {
+        Event event = new Event(name, location, dateAndTime, description);
         events.add(event);
     }
 
-    // Remove a class by ID
-    public boolean removeClass(int classId) {
-        return classes.removeIf(classInfo -> classInfo.getClassId() == classId);
+    // Edit an Event
+    public void editEvent(String name, String location, String dateAndTime, String description) {
+        for (Event event : events) {
+            if (event.getName().equals(name)) {
+                events.remove(event);
+                events.add(new Event(name, location, dateAndTime, description));
+                return;
+            }
+        }
     }
 
-    // Remove an event by name
-    public boolean removeEvent(String eventName) {
-        return events.removeIf(event -> event.getName().equalsIgnoreCase(eventName));
+    // Remove an Event
+    public void removeEvent(String name) {
+        events.removeIf(event -> event.getName().equals(name));
     }
 }
