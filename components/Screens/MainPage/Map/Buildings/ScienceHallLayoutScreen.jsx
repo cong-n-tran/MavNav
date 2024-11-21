@@ -14,7 +14,6 @@ const ScienceHallLayoutScreen = ({ navigation, route }) => {
   const { entryPoint, desiredRoom } = route.params;
 
   const entryCoordinates = getScienceHallEntryPointCoordiantes(entryPoint);
-//   Alert.alert(`thiis coorddinates: ${entryCoordinates}\n this is entryPoint ${entryPoint}`)
 
   const handleImagePress = (event) => {
     const { locationX, locationY } = event.nativeEvent;
@@ -36,7 +35,7 @@ const ScienceHallLayoutScreen = ({ navigation, route }) => {
       setLoading(true);
 
       processFloorPlan(
-        "images/SH_1.png",
+        "images/SH/SH_1.png",
         entryCoordinates.x,
         entryCoordinates.y,
         endPoint.x,
@@ -63,7 +62,7 @@ const ScienceHallLayoutScreen = ({ navigation, route }) => {
           />
         ) : (
           <Image
-            source={require('../../../../../android/app/src/main/assets/images/SH_1.png')}
+            source={require('../../../../../android/app/src/main/assets/images/SH/SH_1.png')}
             style={[styles.image, { width: width * 0.9, height: width * 0.9 }]}
             resizeMode="contain"
           />
