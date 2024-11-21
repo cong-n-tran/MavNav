@@ -15,13 +15,17 @@ import { buildingLocations } from './Locations/BuildingLocations';
 
 const GoogleMap = ({navigation, route}) => {
 
-  const { startLocation, endLocation, endLocationLayout } = route.params;
+  const { startLocation, endLocationObject, endLocationLayout } = route.params;
+
+  const endLocationName = endLocationObject.name;
+  const endLocation = endLocationObject.coordinates;
 
   const [userLocation, setUserLocation] = useState({
     latitude: startLocation.latitude,  // UTA parking lot
     longitude: startLocation.longitude,
   });
 
+  
   const [destination, setDestination] = useState({
     latitude: endLocation.latitude, 
     longitude: endLocation.longitude // geoscience building
@@ -90,7 +94,11 @@ const GoogleMap = ({navigation, route}) => {
     }
     // going beyond the index will take you to the building layout
     else{
-      navigation.navigate(endLocationLayout)
+      navigation.navigate(endLocationLayout, 
+      {
+        entryPoint: endLocationName,
+        desiredRoom: null,
+      });
     }
   };
 
@@ -131,7 +139,11 @@ const GoogleMap = ({navigation, route}) => {
   };
 
   const handleBuildingClick = (layoutScreen) => {
-    navigation.navigate(layoutScreen);
+    navigation.navigate(layoutScreen, 
+      {
+        entryPoint: endLocationName,
+        desiredRoom: 1,
+    });
   };
 
   return (
@@ -168,26 +180,16 @@ const GoogleMap = ({navigation, route}) => {
             >
               <FontAwesomeIcon icon={faBuilding} size={20} color="black" />
             </Marker>
-            <Marker
-              key={51}
-              coordinate={building.coordinates.entries.north}
-              title={building.name}
-            />
-            <Marker
-              key={52}
-              coordinate={building.coordinates.entries.south}
-              title={building.name}
-            />
-            <Marker
-              key={53}
-              coordinate={building.coordinates.entries.west}
-              title={building.name}
-            />
-            <Marker
-              key={54}
-              coordinate={building.coordinates.entries.east}
-              title={building.name}
-            />
+            {building.coordinates.entries && 
+              Object.entries(building.coordinates.entries).map(([entryKey, entryCoordinates]) => (
+                <Marker
+                  key={entryKey} // Unique key for each entry marker
+                  coordinate={entryCoordinates}
+                  title={`Entry: ${entryKey}`}
+                />
+              ))
+            }
+
           </View>
         ))}
 

@@ -5,11 +5,11 @@ import GoogleMap from "./GoogleMap";
 import { Picker } from "@react-native-picker/picker";
 import { buildingLocations, getBuildingLocationByName, getBuildingLayoutByName } from "./Locations/BuildingLocations";
 import { parkingLocations, getParkingLocationByName, getParkingLayoutByName } from "./Locations/ParkingLocations";
-import { calculateDistance, closestEntry } from "./HelperFunctions/MapHelperFunctions";
+import { closestEntry } from "./HelperFunctions/MapHelperFunctions";
 
 const FindRoom = ({ navigation }) => {
     const startLabel = "MAC"; // defaults
-    const endLabel = "Geoscience Building"; //default
+    const endLabel = "Science Hall"; //default
 
     const [startLocationLabel, setStartLocationLabel] = useState(startLabel);
     const [endLocationLabel, setEndLocationLabel] = useState(endLabel);
@@ -35,13 +35,13 @@ const FindRoom = ({ navigation }) => {
       
       // building map then entries > 0 else it is parking then entries == 0 
       if ((Object.keys(endCoordinates.entries).length > 0)){
-        endLocation = closestEntry(startCoordinates.default, endCoordinates.entries).coordinates;
+        endLocationObject = closestEntry(startCoordinates.default, endCoordinates.entries);
       }
 
       if (startCoordinates && endLocation) {
         navigation.navigate('GoogleMap', {
           startLocation: startCoordinates.default, // the start positon will always be static 
-          endLocation: endLocation,
+          endLocationObject: endLocationObject,
           endLocationLayout: endLocationLayout,
         });
       } else {

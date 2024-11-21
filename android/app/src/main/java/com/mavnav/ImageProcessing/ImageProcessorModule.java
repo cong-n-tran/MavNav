@@ -83,13 +83,13 @@ public class ImageProcessorModule extends ReactContextBaseJavaModule {
             }
 
             // Perform pathfinding to generate the path from start to end
-            int x1 = 796;
-            int y1 = 387;
+//            int x1 = 796;
+//            int y1 = 387;
 
-            int x2 = 833;
-            int y2 = 1241;
+            int x2 = 942;
+            int y2 = 661;
             PathFinderPackage pathfinder = new PathFinderPackage();
-            ArrayList<Point> path = pathfinder.performAStar(imageMat, distanceTransformed, new Point(x1, y1), new Point(x2, y2));
+            ArrayList<Point> path = pathfinder.performAStar(imageMat, distanceTransformed, new Point(startX, startY), new Point(x2, y2));
 
             // Draw the path on the image
             for (Point p : path) {

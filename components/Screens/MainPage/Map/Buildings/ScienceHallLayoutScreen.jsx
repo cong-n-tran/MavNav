@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, TouchableOpacity, Dimensions, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { processFloorPlan } from '../HelperFunctions/PathFinderFunctions';
+import { getScienceHallEntryPointCoordiantes } from '../Locations/BuildingLayout/SH/SH_1';
 
 
-const ScienceHallLayoutScreen = ({ navigation }) => {
+const ScienceHallLayoutScreen = ({ navigation, route }) => {
   const { width } = Dimensions.get('window');
   const [startPoint, setStartPoint] = useState(null);
   const [endPoint, setEndPoint] = useState(null);
   const [processedImagePath, setProcessedImagePath] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const { entryPoint, desiredRoom } = route.params;
+
+  const entryCoordinates = getScienceHallEntryPointCoordiantes(entryPoint);
+//   Alert.alert(`thiis coorddinates: ${entryCoordinates}\n this is entryPoint ${entryPoint}`)
 
   const handleImagePress = (event) => {
     const { locationX, locationY } = event.nativeEvent;
@@ -31,8 +37,8 @@ const ScienceHallLayoutScreen = ({ navigation }) => {
 
       processFloorPlan(
         "images/SH_1.png",
-        startPoint.x,
-        startPoint.y,
+        entryCoordinates.x,
+        entryCoordinates.y,
         endPoint.x,
         endPoint.y
       )

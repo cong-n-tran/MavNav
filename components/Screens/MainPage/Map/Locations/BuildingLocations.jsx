@@ -7,12 +7,15 @@ export const buildingLocations = [
       name: "Science Hall", 
       coordinates: { 
         default: {latitude: 32.73071184496668, longitude: -97.11402209896427},
-        center: {latitude:-97.11402209896427, longitude: -97.11402209896427},
+        center: {latitude: 32.73071184496668, longitude: -97.11402209896427},
         entries: {
-          north: {latitude: 32.73100065483103, longitude: -97.1136009921458},
-          south: {latitude: 32.73041175247476, longitude:-97.11382361549465},
-          east: {latitude: 32.73087881328362, longitude: -97.11349102157537},
-          west: {latitude: 32.73087349269386, longitude: -97.11423922867473}
+          north_1: {latitude: 32.73095370165395, longitude: -97.11392743506755},
+          north_2: {latitude: 32.7309537016539, longitude: -97.11361484194124},
+          south_1: {latitude: 32.73041175247476, longitude:-97.11382361549465},
+          east_1: {latitude: 32.73087881328362, longitude: -97.11349102157537},
+          east_2: {latitude: 32.730651335925785, longitude: -97.11394545196242},
+          west_1: {latitude: 32.73087349269386, longitude: -97.11423922867473},
+          west_2: {latitude: 32.73050507845114, longitude: -97.11425444170978}
         }
       },
       layout: 'ScienceHallLayoutScreen',
