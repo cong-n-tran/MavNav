@@ -10,6 +10,9 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
+import com.mavnav.FireBase.FirebaseAuthPackage
+import com.mavnav.ImageProcessing.ImageProcessorPackage
+
 
 class MainApplication : Application(), ReactApplication {
 
@@ -18,7 +21,9 @@ class MainApplication : Application(), ReactApplication {
       override fun getPackages(): List<ReactPackage> =
         PackageList(this).packages.apply {
           // Add custom packages here
-          add(DataStorePackage()) // Register the DataStore package
+          add(DataStorePackage()); // Register the DataStore package
+          add(FirebaseAuthPackage());
+          add(ImageProcessorPackage())
         }
 
       override fun getJSMainModuleName(): String = "index"
