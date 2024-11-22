@@ -82,26 +82,30 @@ const Profile = ({ navigation }) => {
     };
 
     return (
-        <ScrollView decelerationRate="normal">
-            <StyledView className='flex-1 justify-center p-6'>
-                <StyledView className='flex-1'>
-                    <StyledText className='text-4xl font-bold text-blue-800 mb-4'>Profile</StyledText>
+        <ScrollView decelerationRate="normal" className="bg-gray-50">
+            <StyledView className="flex-1 justify-center p-6">
+                {/* Header */}
+                <StyledView className="bg-blue-800 p-6 rounded-b-3xl shadow-md mb-4">
+                    <StyledText className="text-white text-4xl font-bold mb-2">Profile</StyledText>
                 </StyledView>
-                <StyledView className='flex-row justify-between items-center mb-4'>
-                    <StyledView className='flex-1 mr-4'>
-                        <Text className='text-2xl font-bold text-gray-800'>{student.firstName} {student.lastName}</Text>
-                        <Text className='text-sm text-gray-600'>ID: {student.studentId}</Text>
-                        <Text className='text-sm text-gray-600'>{student.email}</Text>
+
+                {/* User Info */}
+                <StyledView className="flex-row justify-between items-center bg-white p-4 rounded-lg shadow-md mb-4">
+                    <StyledView className="flex-1 mr-4">
+                        <Text className="text-2xl font-bold text-blue-800">{student.firstName} {student.lastName}</Text>
+                        <Text className="text-sm text-gray-600">ID: {student.studentId}</Text>
+                        <Text className="text-sm text-gray-600">{student.email}</Text>
                     </StyledView>
                     <Image
-                        source={{ uri: 'https://picsum.photos/200/300 ' }}
-                        className='w-20 h-20 rounded-full border-2 border-gray-300'
+                        source={{ uri: 'https://picsum.photos/200/300' }}
+                        className="w-20 h-20 rounded-full border-4 border-blue-800"
                     />
                 </StyledView>
-                <StyledView className="mb-4 bg-gray-100">
+
+                {/* Semester Picker and Edit Section */}
+                <StyledView className="bg-white p-4 rounded-lg shadow-md mb-4">
                     <StyledText className="text-xl font-bold text-blue-800 mb-4">Classes</StyledText>
-                    <StyledView className="flex-row items-center bg-white border border-gray-300 rounded-lg p-2">
-                        {/* Semester Dropdown */}
+                    <StyledView className="flex-row items-center border border-gray-200 rounded-lg p-2 bg-gray-50">
                         <Picker
                             style={{ flex: 1 }}
                             selectedValue={selectedSemester}
@@ -115,47 +119,53 @@ const Profile = ({ navigation }) => {
                             {isEditing ? (
                                 <Pressable
                                     onPress={handleSave}
-                                    className="bg-green-500 px-4 py-2 rounded-lg"
+                                    className="bg-green-500 px-4 py-2 rounded-lg shadow-md"
                                 >
-                                    <Text className="text-white">Save</Text>
+                                    <Text className="text-white font-semibold">Save</Text>
                                 </Pressable>
                             ) : (
                                 <Pressable
                                     onPress={() => setIsEditing(true)}
-                                    className="bg-blue-500 px-4 py-2 rounded-lg"
+                                    className="bg-blue-500 px-4 py-2 rounded-lg shadow-md"
                                 >
-                                    <Text className="text-white">Edit</Text>
+                                    <Text className="text-white font-semibold">Edit</Text>
                                 </Pressable>
                             )}
                         </StyledView>
                     </StyledView>
                 </StyledView>
+
+                {/* Add New Class Form */}
                 {isEditing && (
-                    <StyledView className="p-4 bg-gray-100 border border-gray-300 rounded-lg mb-4">
-                        <StyledView className='flex flex-row justify-between items-center w-full'>
-                            <StyledText className="text-lg font-bold mb-2">Add New Class</StyledText>
-                            <StyledText onPress={() => { setIsEditing(false) }} className="text-md font-normal mb-2">Close</StyledText>
+                    <StyledView className="p-4 bg-gray-50 border border-gray-300 rounded-lg mb-4">
+                        <StyledView className="flex-row justify-between items-center mb-4">
+                            <StyledText className="text-lg font-bold">Add New Class</StyledText>
+                            <Pressable onPress={() => setIsEditing(false)}>
+                                <StyledText className="text-blue-500 font-semibold">Close</StyledText>
+                            </Pressable>
                         </StyledView>
                         <TextInput
                             placeholder="Class Name"
                             value={newClass.name}
                             onChangeText={(text) => setNewClass({ ...newClass, name: text })}
-                            className="bg-white border border-gray-300 rounded-lg p-2 mb-2"
+                            className="bg-white border border-gray-300 rounded-lg p-2 mb-2 shadow-sm"
                         />
                         <TextInput
                             placeholder="Professor"
                             value={newClass.professor}
                             onChangeText={(text) => setNewClass({ ...newClass, professor: text })}
-                            className="bg-white border border-gray-300 rounded-lg p-2 mb-2"
+                            className="bg-white border border-gray-300 rounded-lg p-2 mb-2 shadow-sm"
                         />
                         <TextInput
                             placeholder="Location"
                             value={newClass.location}
                             onChangeText={(text) => setNewClass({ ...newClass, location: text })}
-                            className="bg-white border border-gray-300 rounded-lg p-2"
+                            className="bg-white border border-gray-300 rounded-lg p-2 shadow-sm"
                         />
                     </StyledView>
                 )}
+
+                {/* Class List */}
                 <ProfileContainer>
                     <ProfileColumn>
                         {classes[selectedSemester]?.map((classInfo, index) => (
@@ -163,7 +173,7 @@ const Profile = ({ navigation }) => {
                                 key={index}
                                 className="bg-white p-4 rounded-lg shadow-md border border-gray-200 mb-4"
                             >
-                                <StyledText className="text-xl font-bold text-blue-700 mb-4">
+                                <StyledText className="text-xl font-bold text-blue-800 mb-2">
                                     {classInfo.className}
                                 </StyledText>
                                 <View className="space-y-2">
@@ -179,9 +189,12 @@ const Profile = ({ navigation }) => {
                     </ProfileColumn>
                 </ProfileContainer>
 
-
-                <LogoutButton className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full' onPress={logoutUser}>
-                    <StyledText className='text-white font-bold'>Log out</StyledText>
+                {/* Logout Button */}
+                <LogoutButton
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-md mt-6"
+                    onPress={logoutUser}
+                >
+                    <StyledText className="text-white font-bold text-lg">Log out</StyledText>
                 </LogoutButton>
             </StyledView>
         </ScrollView>

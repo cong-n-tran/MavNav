@@ -55,7 +55,6 @@ const FindRoom = ({ navigation }) => {
             <Picker.Item key={index} label={loc.name} value={loc.name} />
           ))}
         </Picker>
-  
         <Button title="Confirm Locations" onPress={handleConfirmLocations} />
       </View>
     );

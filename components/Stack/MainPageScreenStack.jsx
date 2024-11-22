@@ -10,7 +10,7 @@ import SEIRLayoutScreen from "../Screens/MainPage/Map/Buildings/SEIRLayoutScreen
 const MainPageScreenStack = () => {
     const MainPageScreen = createNativeStackNavigator();
      return (
-        <MainPageScreen.Navigator>
+        <MainPageScreen.Navigator screenOptions={{ headerShown: false }}>
           <MainPageScreen.Screen 
             name="Main Page Stack" 
             component={MainPage} 
