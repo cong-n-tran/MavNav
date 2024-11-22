@@ -4,7 +4,7 @@ import Setting from "../Screens/MainPage/Settings/Setting";
 const SettingPageStack = () => {
     const SettingPage = createNativeStackNavigator();
      return (
-        <SettingPage.Navigator>
+        <SettingPage.Navigator screenOptions={{headerShown:false}}>
           <SettingPage.Screen name="Setting Stack" component={Setting} />
         </SettingPage.Navigator>
     );

@@ -20,7 +20,7 @@ const NavigationBar = () => {
                 options={{ headerShown: false }} 
             />
             <Tab.Screen 
-                name="Settings" 
+                name="Events" 
                 component={SettingPageStack} 
                 options={{ headerShown: false }} 
             />

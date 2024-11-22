@@ -7,8 +7,6 @@ import {
     StyledView,
     ProfileContainer,
     ProfileColumn,
-    StyledTextProfile,
-    StyledViewProfile,
     LogoutButton
 } from '../../../Style/Style';
 
@@ -86,7 +84,10 @@ const Profile = ({ navigation }) => {
     return (
         <ScrollView decelerationRate="normal">
             <StyledView className='flex-1 justify-center p-6'>
-                <StyledView className='flex-row justify-between items-center p-4'>
+                <StyledView className='flex-1'>
+                    <StyledText className='text-4xl font-bold text-blue-800 mb-4'>Profile</StyledText>
+                </StyledView>
+                <StyledView className='flex-row justify-between items-center mb-4'>
                     <StyledView className='flex-1 mr-4'>
                         <Text className='text-2xl font-bold text-gray-800'>{student.firstName} {student.lastName}</Text>
                         <Text className='text-sm text-gray-600'>ID: {student.studentId}</Text>
@@ -97,7 +98,7 @@ const Profile = ({ navigation }) => {
                         className='w-20 h-20 rounded-full border-2 border-gray-300'
                     />
                 </StyledView>
-                <StyledView className="p-2 bg-gray-100">
+                <StyledView className="mb-4 bg-gray-100">
                     <StyledText className="text-xl font-bold text-blue-800 mb-4">Classes</StyledText>
                     <StyledView className="flex-row items-center bg-white border border-gray-300 rounded-lg p-2">
                         {/* Semester Dropdown */}
@@ -133,7 +134,7 @@ const Profile = ({ navigation }) => {
                     <StyledView className="p-4 bg-gray-100 border border-gray-300 rounded-lg mb-4">
                         <StyledView className='flex flex-row justify-between items-center w-full'>
                             <StyledText className="text-lg font-bold mb-2">Add New Class</StyledText>
-                            <StyledText onPress={() => {setIsEditing(false)}} className="text-md font-normal mb-2">Close</StyledText>
+                            <StyledText onPress={() => { setIsEditing(false) }} className="text-md font-normal mb-2">Close</StyledText>
                         </StyledView>
                         <TextInput
                             placeholder="Class Name"
