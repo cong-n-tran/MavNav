@@ -35,7 +35,7 @@ const Login = ({ navigation }) => {
       <StyledView className='flex items-start justify-end w-full mt-4 ml-4'>
           <Text onPress={() => navigation.goBack()}>Back</Text>
       </StyledView>
-      <StyledText className="text-2xl font-bold text-blue-800 mb-4 mt-40">Login</StyledText>
+      <StyledText className="text-2xl font-bold text-blue-800 mb-4 mt-24">Login</StyledText>
       <StyledText className="text-lg font-regular text-[#ffffff] mb-12">Welcome Back!</StyledText>
       
       <TextInput
@@ -55,10 +55,16 @@ const Login = ({ navigation }) => {
       />
       
       <Pressable
-        className="bg-blue-800 py-4 rounded-lg w-1/2 mb-2"
+        className="bg-blue-800 py-4 rounded-lg w-1/2 mb-4"
         onPress={handleLogin}
       >
         <StyledText className="text-white text-center font-bold">Login</StyledText>
+      </Pressable>
+      <Pressable
+        className="bg-transparent border-blue-800 border-2 py-4 rounded-lg w-1/2 mb-2"
+        onPress={() => {navigation.navigate("Reset")}}
+      >
+        <StyledText className="text-blue-800 text-center font-bold">Forgot Password</StyledText>
       </Pressable>
 
       {/* <Pressable

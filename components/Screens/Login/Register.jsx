@@ -8,6 +8,9 @@ const { FirebaseAuthModule } = NativeModules;
 const Register = ({ navigation }) => {
     const [registerEmail, setRegisterEmail] = useState('');
     const [registerPassword, setRegisterPassword] = useState('');
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
+    const [studentId, setStudetId] = useState('')
 
     const handleRegister = () => {
         if (registerEmail && registerPassword) {
@@ -32,9 +35,32 @@ const Register = ({ navigation }) => {
             <StyledView className='flex items-start justify-end w-full mt-4 ml-4'>
                 <Text onPress={() => navigation.goBack()}>Back</Text>
             </StyledView>
-            <StyledText className="text-2xl font-bold text-blue-800 mb-4 mt-40">Create An Account</StyledText>
+            <StyledText className="text-2xl font-bold text-blue-800 mb-4 mt-14">Create An Account</StyledText>
             <StyledText className="text-lg font-regular text-[#ffffff] mb-12">Get signed up!</StyledText>
+            <StyledView className="flex w-full flex-row">
+                <TextInput
+                    placeholder="First Name"
+                    value={firstName}
+                    onChangeText={setFirstName}
+                    className="mr-2 flex-1 bg-[#F4F6FF] w-full rounded-lg font-semibold pl-4 py-4 mb-4"
+                />
 
+                <TextInput
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChangeText={setLastName}
+                    secureTextEntry
+                    className="flex-1 bg-[#F4F6FF] w-full rounded-lg font-semibold pl-4 py-4 mb-4"
+                />
+
+            </StyledView>
+            <TextInput
+                placeholder="Student Id"
+                value={studentId}
+                onChangeText={setStudetId}
+                secureTextEntry
+                className="bg-[#F4F6FF] px-8 w-full rounded-lg font-semibold pl-4 py-4 mb-4"
+            />
             <TextInput
                 placeholder="Email"
                 value={registerEmail}
@@ -51,22 +77,14 @@ const Register = ({ navigation }) => {
                 className="bg-[#F4F6FF] w-full rounded-lg font-semibold pl-4 py-4 mb-4"
             />
 
+
             <Pressable
                 className="bg-blue-800 py-4 rounded-lg w-1/2 mb-2"
                 onPress={handleRegister}
             >
                 <StyledText className="text-white text-center font-bold">Register</StyledText>
             </Pressable>
-
-            {/* <Pressable
-                className="bg-gray-300 py-2 rounded-lg w-full"
-                onPress={() => navigation.goBack()}
-            >
-                <StyledText className="text-black text-center font-bold">Go back</StyledText>
-            </Pressable> */}
         </StyledView>
     )
-
-
 }
 export default Register; 
