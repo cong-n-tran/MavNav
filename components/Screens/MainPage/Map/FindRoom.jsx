@@ -1,18 +1,30 @@
 import React, {useState} from "react";
 import {Pressable, View , Text, Modal, Alert} from "react-native";
 import { Button } from "react-native";
-import GoogleMap from "./GoogleMap";
 import { Picker } from "@react-native-picker/picker";
-import { buildingLocations, getBuildingLocationByName, getBuildingLayoutByName } from "./Locations/BuildingLocations";
+import { 
+  buildingLocations, 
+  getBuildingDataByInitals, 
+  getBuildingInitalsByName,
+  getBuildingLocationByName, 
+  getBuildingLayoutByName 
+} from "./Locations/BuildingLocations";
 import { parkingLocations, getParkingLocationByName, getParkingLayoutByName } from "./Locations/ParkingLocations";
 import { closestEntry } from "./HelperFunctions/MapHelperFunctions";
 
 const FindRoom = ({ navigation }) => {
     const startLabel = "MAC"; // defaults
     const endLabel = "Science Hall"; //default
+    const  roomlabel = "SH_109"; // default
 
     const [startLocationLabel, setStartLocationLabel] = useState(startLabel);
     const [endLocationLabel, setEndLocationLabel] = useState(endLabel);
+    const [roomLocationLabel, setRoomLocationLabel] = useState(roomlabel);
+
+    // boolean to show this picker
+    const [showRoomSelection, setShowRoomSelection] = useState(false);
+    const [roomOptions, setRoomOptions] = useState([]); // display rooms
+    const [currentFloor, setCurrentFloor] = useState(1);
 
     const handleConfirmLocations = () => {
       //return an hashmap
@@ -38,16 +50,37 @@ const FindRoom = ({ navigation }) => {
         endLocationObject = closestEntry(startCoordinates.default, endCoordinates.entries);
       }
 
-      if (startCoordinates && endLocation) {
+      if (startCoordinates && endLocation && roomOptions.length > 0 ) {
         navigation.navigate('GoogleMap', {
           startLocation: startCoordinates.default, // the start positon will always be static 
           endLocationObject: endLocationObject,
+          roomLabel: roomLocationLabel, 
           endLocationLayout: endLocationLayout,
         });
       } else {
         Alert.alert("Selection Required", "Please select both start and end locations.");
       }
     };
+
+    const handleEndLocationConfirmation = (itemValue) => {
+      setEndLocationLabel(itemValue);
+      if (getBuildingLocationByName(itemValue)) {
+        setShowRoomSelection(true);
+        try {
+          const buildingInitals = getBuildingInitalsByName(itemValue);
+          const buildingData = getBuildingDataByInitals(buildingInitals);
+          const buildRoomInformation = buildingData[0].rooms[currentFloor];
+          setRoomOptions(buildRoomInformation ? Object.keys(buildRoomInformation) : []); // Assuming the mock data has the rooms as keys
+        } 
+        catch (error) {
+          console.error("Error loading building data:", error);
+          setRoomOptions([]); // fallback to an empty array if loading fails
+        }
+      } else {
+        setShowRoomSelection(false);
+        setRoomOptions([]);
+      }
+    }
   
     return (
       <View className="p-4">
@@ -67,7 +100,8 @@ const FindRoom = ({ navigation }) => {
         <Text className="text-lg font-semibold mt-4 mb-2">Choose End Location</Text>
         <Picker
           selectedValue={endLocationLabel}
-          onValueChange={(itemValue) => setEndLocationLabel(itemValue)}
+          onValueChange={(itemValue) => handleEndLocationConfirmation(itemValue)// Properly call the function with the parameter
+        }
         >
           {buildingLocations.map((loc, index) => (
             <Picker.Item key={index} label={loc.name} value={loc.name} />
@@ -75,7 +109,25 @@ const FindRoom = ({ navigation }) => {
           {parkingLocations.map((loc, index) => (
             <Picker.Item key={index} label={loc.name} value={loc.name} />
           ))}
+          {/*  conditional showing of room selection picker*/}
         </Picker>
+        {showRoomSelection && (
+          <View>
+            <Text className="text-lg font-semibold mt-4 mb-2">Choose Room Option</Text>
+            <Picker
+              selectedValue={roomLocationLabel}
+              onValueChange={(itemValue) => setRoomLocationLabel(itemValue)}
+            >
+              {roomOptions && roomOptions.length > 0 ? (
+                roomOptions.map((roomName, index) => (
+                  <Picker.Item key={index} label={roomName} value={roomName} />
+                ))
+              ) : (
+                <Picker.Item label="No rooms available" value={null} />
+              )}
+            </Picker>
+          </View>
+        )}
   
         <Button title="Confirm Locations" onPress={handleConfirmLocations} />
       </View>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, TouchableOpacity, Dimensions, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { processFloorPlan } from '../HelperFunctions/PathFinderFunctions';
-import { getScienceHallEntryPointCoordiantes } from '../Locations/BuildingLayout/SH/SH_1';
+import { getScienceHallEntryPointCoordinates, getScienceHallRoomPointCoordinates } from '../Locations/BuildingLayout/SH';
 
 
 const ScienceHallLayoutScreen = ({ navigation, route }) => {
@@ -13,7 +13,8 @@ const ScienceHallLayoutScreen = ({ navigation, route }) => {
 
   const { entryPoint, desiredRoom } = route.params;
 
-  const entryCoordinates = getScienceHallEntryPointCoordiantes(entryPoint);
+  const entryCoordinates = getScienceHallEntryPointCoordinates(entryPoint); // start point of the entry of the building
+  const endCoordinates = getScienceHallRoomPointCoordinates(desiredRoom); // endpoint of a specific room
 
   const handleImagePress = (event) => {
     const { locationX, locationY } = event.nativeEvent;
@@ -38,8 +39,8 @@ const ScienceHallLayoutScreen = ({ navigation, route }) => {
         "images/SH/SH_1.png",
         entryCoordinates.x,
         entryCoordinates.y,
-        endPoint.x,
-        endPoint.y
+        endCoordinates.x,
+        endCoordinates.y
       )
         .then((path) => setProcessedImagePath(`file://${path}`))
         .catch((error) => Alert.alert('Error', error.message))

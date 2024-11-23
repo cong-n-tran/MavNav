@@ -86,10 +86,10 @@ public class ImageProcessorModule extends ReactContextBaseJavaModule {
 //            int x1 = 796;
 //            int y1 = 387;
 
-            int x2 = 942;
-            int y2 = 661;
+//            int x2 = 942;
+//            int y2 = 661;
             PathFinderPackage pathfinder = new PathFinderPackage();
-            ArrayList<Point> path = pathfinder.performAStar(imageMat, distanceTransformed, new Point(startX, startY), new Point(x2, y2));
+            ArrayList<Point> path = pathfinder.performAStar(imageMat, distanceTransformed, new Point(startX, startY), new Point(endX, endY));
 
             // Draw the path on the image
             for (Point p : path) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, PermissionsAndroid, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, PermissionsAndroid, Platform, TouchableOpacity, Alert } from 'react-native';
 import MapView, { Marker, Polyline, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFlag, faPerson, faBuilding } from '@fortawesome/free-solid-svg-icons';
@@ -15,7 +15,12 @@ import { buildingLocations } from './Locations/BuildingLocations';
 
 const GoogleMap = ({navigation, route}) => {
 
-  const { startLocation, endLocationObject, endLocationLayout } = route.params;
+  const { 
+    startLocation, 
+    endLocationObject, 
+    roomLabel, 
+    endLocationLayout 
+  } = route.params;
 
   const endLocationName = endLocationObject.name;
   const endLocation = endLocationObject.coordinates;
@@ -94,11 +99,7 @@ const GoogleMap = ({navigation, route}) => {
     }
     // going beyond the index will take you to the building layout
     else{
-      navigation.navigate(endLocationLayout, 
-      {
-        entryPoint: endLocationName,
-        desiredRoom: null,
-      });
+      handleBuildingClick(endLocationLayout)
     }
   };
 
@@ -142,7 +143,7 @@ const GoogleMap = ({navigation, route}) => {
     navigation.navigate(layoutScreen, 
       {
         entryPoint: endLocationName,
-        desiredRoom: 1,
+        desiredRoom: roomLabel,
     });
   };
 
@@ -180,7 +181,8 @@ const GoogleMap = ({navigation, route}) => {
             >
               <FontAwesomeIcon icon={faBuilding} size={20} color="black" />
             </Marker>
-            {building.coordinates.entries && 
+            {/* purely for debugging */}
+            {/* {building.coordinates.entries && 
               Object.entries(building.coordinates.entries).map(([entryKey, entryCoordinates]) => (
                 <Marker
                   key={entryKey} // Unique key for each entry marker
@@ -188,7 +190,7 @@ const GoogleMap = ({navigation, route}) => {
                   title={`Entry: ${entryKey}`}
                 />
               ))
-            }
+            } */}
 
           </View>
         ))}

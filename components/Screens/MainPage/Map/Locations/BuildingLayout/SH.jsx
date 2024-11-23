@@ -1,4 +1,4 @@
-export const SH_1 = [
+export default SH = [
     {
         dimensions: {x: 1584, y: 1224},
         entries: {
@@ -56,7 +56,7 @@ export const SH_1 = [
                 'SH_114': {x: 376, y: 390}, //376,390
                 'SH_117': {x: 395, y: 492}, //395,492
                 'SH_119': {x: 390, y: 271}, //390,271
-                'SH_120': {x: 0, y: 0}, //393,243
+                'SH_120': {x: 393, y:243}, //393,243
                 // there's door frames
                 'SH_121': {x: 556, y: 248}, //556,248
                 'SH_122': {x: 620, y: 236}, //620,236
@@ -132,5 +132,7 @@ export const SH_1 = [
             }
         }
     }
-]
-export const getScienceHallEntryPointCoordiantes = (name) => { return SH_1[0].entries[name] || null }
+];
+
+export const getScienceHallRoomPointCoordinates = (room) => { return SH[0].rooms[1][room] || null };
+export const getScienceHallEntryPointCoordinates = (name) => { return SH[0].entries[name] || null }
