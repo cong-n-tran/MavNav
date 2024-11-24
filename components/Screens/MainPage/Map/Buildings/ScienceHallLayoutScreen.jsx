@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, TouchableOpacity, Dimensions, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import { View, Image, TouchableOpacity, Dimensions, StyleSheet, ActivityIndicator, Alert, Text } from 'react-native';
 import { processFloorPlan } from '../HelperFunctions/PathFinderFunctions';
 import { getScienceHallEntryPointCoordinates, getScienceHallRoomPointCoordinates } from '../Locations/BuildingLayout/SH';
 
 
 const ScienceHallLayoutScreen = ({ navigation, route }) => {
-  const { width } = Dimensions.get('window');
   const [startPoint, setStartPoint] = useState(null);
   const [endPoint, setEndPoint] = useState(null);
   const [processedImagePath, setProcessedImagePath] = useState(null);
@@ -30,83 +29,74 @@ const ScienceHallLayoutScreen = ({ navigation, route }) => {
     }
   };
 
-  
-  useEffect(() => {
-    if (startPoint && endPoint) {
-      setLoading(true);
-
-      processFloorPlan(
-        "images/SH/SH_1.png",
-        entryCoordinates.x,
-        entryCoordinates.y,
-        endCoordinates.x,
-        endCoordinates.y
-      )
-        .then((path) => setProcessedImagePath(`file://${path}`))
-        .catch((error) => Alert.alert('Error', error.message))
-        .finally(() => setLoading(false));
+  const handleGeneratePath = () => {
+    if (!entryCoordinates || !endCoordinates) {
+      Alert.alert('Error', 'Entry point or desired room coordinates are missing.');
+      return;
     }
-  }, [startPoint, endPoint]);
+  
+    setLoading(true);
+  
+    processFloorPlan(
+      "images/SH/SH_1.png",
+      entryCoordinates.x,
+      entryCoordinates.y,
+      endCoordinates.x,
+      endCoordinates.y
+    )
+      .then((path) => setProcessedImagePath(`file://${path}`))
+      .catch((error) => Alert.alert('Error', error.message))
+      .finally(() => setLoading(false));
+  };
+  useEffect(() => {
+    if (processedImagePath) {
+      console.log('Path generated and rendered.');
+    }
+  }, [processedImagePath]);
 
   return (
-    <View style={styles.container}>
+    <View className="relative flex-1 justify-center items-center bg-white">
       <TouchableOpacity
         onPress={handleImagePress}
         activeOpacity={1}
-        style={{ position: 'relative' }}
+        className="relative"
       >
         {processedImagePath ? (
           <Image
             source={{ uri: processedImagePath }}
-            style={[styles.image, { width: width * 0.9, height: width * 0.9 }]}
+            className="w-[140vw] h-[80vh] rounded-lg ml-6"
             resizeMode="contain"
           />
         ) : (
           <Image
             source={require('../../../../../android/app/src/main/assets/images/SH/SH_1.png')}
-            style={[styles.image, { width: width * 0.9, height: width * 0.9 }]}
+            className="w-[140vw] h-[80vh] rounded-lg ml-6"
             resizeMode="contain"
           />
         )}
-        {startPoint && (
-          <View
-            style={[
-              styles.marker,
-              { left: startPoint.x - 10, top: startPoint.y - 10, backgroundColor: 'green' },
-            ]}
-          />
-        )}
-        {endPoint && (
-          <View
-            style={[
-              styles.marker,
-              { left: endPoint.x - 10, top: endPoint.y - 10, backgroundColor: 'red' },
-            ]}
-          />
-        )}
       </TouchableOpacity>
-      {loading && <ActivityIndicator size="large" color="#0000ff" />}
+
+      {loading && (
+        <ActivityIndicator size="large" color="#0000ff" className="my-4" />
+      )}
+
+      <TouchableOpacity
+        onPress={() => handleGeneratePath()}
+        disabled={!entryCoordinates || !endCoordinates || loading}
+        className={`absolute bottom-10 w-[80vw] py-3 rounded-lg ${
+          loading ? 'bg-gray-400' : 'bg-blue-500'
+        }`}
+      >
+        <Text
+          className="text-center text-white font-semibold text-lg"
+          style={{
+            opacity: loading ? 0.5 : 1,
+          }}
+        >
+          {loading ? 'Processing...' : 'Generate Path'}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    aspectRatio: 1,
-  },
-  marker: {
-    position: 'absolute',
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: 'white',
-  },
-});
-
 export default ScienceHallLayoutScreen;

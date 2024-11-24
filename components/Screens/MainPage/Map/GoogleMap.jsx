@@ -172,7 +172,7 @@ const GoogleMap = ({navigation, route}) => {
         </Marker>
         {/* Marker for buildsings */}
         {buildingLocations.map((building) => (
-          <View>
+          <View key={building.id}>
             <Marker
               key={building.id}
               coordinate={building.coordinates.center}

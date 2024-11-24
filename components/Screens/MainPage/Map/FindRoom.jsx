@@ -17,9 +17,9 @@ const FindRoom = ({ navigation }) => {
     const endLabel = "Science Hall"; //default
     const  roomlabel = "SH_109"; // default
 
-    const [startLocationLabel, setStartLocationLabel] = useState(startLabel);
-    const [endLocationLabel, setEndLocationLabel] = useState(endLabel);
-    const [roomLocationLabel, setRoomLocationLabel] = useState(roomlabel);
+    const [startLocationLabel, setStartLocationLabel] = useState('');
+    const [endLocationLabel, setEndLocationLabel] = useState('');
+    const [roomLocationLabel, setRoomLocationLabel] = useState('');
 
     // boolean to show this picker
     const [showRoomSelection, setShowRoomSelection] = useState(false);
@@ -43,20 +43,36 @@ const FindRoom = ({ navigation }) => {
       if (!endLocationLayout){
         endLocationLayout = getParkingLayoutByName(endLocationLabel);
       } 
-      var endLocation = endCoordinates.default
-      
-      // building map then entries > 0 else it is parking then entries == 0 
-      if ((Object.keys(endCoordinates.entries).length > 0)){
-        endLocationObject = closestEntry(startCoordinates.default, endCoordinates.entries);
+
+      // if cannot find anything
+      if (!startCoordinates || !endCoordinates) {
+        Alert.alert("Selection Required", "Please select valid start and end locations.");
+        return; // Exit early if the start or end location is invalid
       }
 
-      if (startCoordinates && endLocation && roomOptions.length > 0 ) {
-        navigation.navigate('GoogleMap', {
-          startLocation: startCoordinates.default, // the start positon will always be static 
-          endLocationObject: endLocationObject,
-          roomLabel: roomLocationLabel, 
-          endLocationLayout: endLocationLayout,
-        });
+      var endLocation = endCoordinates.default
+      
+      // Check if the end location is a building (requires room selection)
+      let isEndLocationBuilding = Object.keys(endCoordinates.entries).length > 0;
+      let endLocationObject = null;
+      if (isEndLocationBuilding) {
+        endLocationObject = closestEntry(startCoordinates.default, endCoordinates.entries);
+      }
+      else{
+        endLocationObject = { name: endLocationLabel, coordinates: endLocation };
+      }
+
+      if (startCoordinates && endLocation) {
+        if (isEndLocationBuilding && roomLocationLabel.length === 0) {
+          Alert.alert("Room Selection Required", "Please select a room for the end location.");
+        } else {
+          navigation.navigate('GoogleMap', {
+            startLocation: startCoordinates.default,
+            endLocationObject: endLocationObject,
+            roomLabel: roomLocationLabel,
+            endLocationLayout: endLocationLayout,
+          });
+    }
       } else {
         Alert.alert("Selection Required", "Please select both start and end locations.");
       }
@@ -64,15 +80,19 @@ const FindRoom = ({ navigation }) => {
 
     const handleEndLocationConfirmation = (itemValue) => {
       setEndLocationLabel(itemValue);
-      if (getBuildingLocationByName(itemValue)) {
+
+      // Reset room options if end location is empty
+      if (!itemValue) {
+        setShowRoomSelection(false);
+        setRoomOptions([]);
+      } else if (getBuildingLocationByName(itemValue)) {
         setShowRoomSelection(true);
         try {
           const buildingInitals = getBuildingInitalsByName(itemValue);
           const buildingData = getBuildingDataByInitals(buildingInitals);
           const buildRoomInformation = buildingData[0].rooms[currentFloor];
           setRoomOptions(buildRoomInformation ? Object.keys(buildRoomInformation) : []); // Assuming the mock data has the rooms as keys
-        } 
-        catch (error) {
+        } catch (error) {
           console.error("Error loading building data:", error);
           setRoomOptions([]); // fallback to an empty array if loading fails
         }
@@ -86,9 +106,10 @@ const FindRoom = ({ navigation }) => {
       <View className="p-4">
         <Text className="text-lg font-semibold mb-2">Choose Start Location</Text>
         <Picker
-          selectedValue={startLocationLabel}
+          selectedValue={startLocationLabel || ''}
           onValueChange={(itemValue) => setStartLocationLabel(itemValue)}
         >
+          <Picker.Item label="Select Start Location" value="" enabled={startLocationLabel === ''} />
           {buildingLocations.map((loc, index) => (
             <Picker.Item key={index} label={loc.name} value={loc.name} />
           ))}
@@ -103,6 +124,7 @@ const FindRoom = ({ navigation }) => {
           onValueChange={(itemValue) => handleEndLocationConfirmation(itemValue)// Properly call the function with the parameter
         }
         >
+          <Picker.Item label="Select End Location" value="" enabled={endLocationLabel === ''} />
           {buildingLocations.map((loc, index) => (
             <Picker.Item key={index} label={loc.name} value={loc.name} />
           ))}
@@ -115,9 +137,11 @@ const FindRoom = ({ navigation }) => {
           <View>
             <Text className="text-lg font-semibold mt-4 mb-2">Choose Room Option</Text>
             <Picker
-              selectedValue={roomLocationLabel}
+              selectedValue={roomLocationLabel || ''}
               onValueChange={(itemValue) => setRoomLocationLabel(itemValue)}
             >
+            <Picker.Item label="Select Room Option" value="" enabled={roomLocationLabel === ''} />
+
               {roomOptions && roomOptions.length > 0 ? (
                 roomOptions.map((roomName, index) => (
                   <Picker.Item key={index} label={roomName} value={roomName} />
