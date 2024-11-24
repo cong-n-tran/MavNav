@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, PermissionsAndroid, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, PermissionsAndroid, Platform, TouchableOpacity, Alert } from 'react-native';
 import MapView, { Marker, Polyline, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFlag, faPerson, faBuilding } from '@fortawesome/free-solid-svg-icons';
@@ -9,19 +9,28 @@ import {
   haversine, 
   calculateZoomLevel, 
   calculateHeading 
-} from './MapHelperFunctions';
+} from './HelperFunctions/MapHelperFunctions';
 import { GOOGLE_MAPS_APIKEY } from '../../../API';
-import { locations } from './Locations';
+import { buildingLocations } from './Locations/BuildingLocations';
 
 const GoogleMap = ({navigation, route}) => {
 
-  const { startLocation, endLocation, endLocationLayout } = route.params;
+  const { 
+    startLocation, 
+    endLocationObject, 
+    roomLabel, 
+    endLocationLayout 
+  } = route.params;
+
+  const endLocationName = endLocationObject.name;
+  const endLocation = endLocationObject.coordinates;
 
   const [userLocation, setUserLocation] = useState({
     latitude: startLocation.latitude,  // UTA parking lot
     longitude: startLocation.longitude,
   });
 
+  
   const [destination, setDestination] = useState({
     latitude: endLocation.latitude, 
     longitude: endLocation.longitude // geoscience building
@@ -47,16 +56,7 @@ const GoogleMap = ({navigation, route}) => {
       const points = decode(response.data.routes[0].overview_polyline.points);
       const directions = response.data.routes[0].legs[0].steps;
       const firstStep = directions[0];
-      // const firstStepDirection = calculateHeading(firstStep.start_location, firstStep.end_location)
-      const distance = haversine(userLocation.latitude, userLocation.longitude, destination.latitude, destination.longitude);
 
-      const zoomLevel = calculateZoomLevel(distance);
-      // Set the camera to show the full route initially
-      const camera = {
-        center: { latitude: (userLocation.latitude + destination.latitude) / 2, longitude: (userLocation.longitude + destination.longitude) / 2 },
-        zoom: zoomLevel, // Set zoom to show the full route
-        pitch: 0, // Set pitch for a tilted view (sky view)
-      };
       mapViewRef.current.fitToCoordinates([startLocation, endLocation], {
         edgePadding: { top: 25, right: 25, bottom: 25, left: 25 },
         animated: true,
@@ -99,7 +99,7 @@ const GoogleMap = ({navigation, route}) => {
     }
     // going beyond the index will take you to the building layout
     else{
-      navigation.navigate(endLocationLayout)
+      handleBuildingClick(endLocationLayout)
     }
   };
 
@@ -128,8 +128,6 @@ const GoogleMap = ({navigation, route}) => {
     setZoomLevel(zoomLevel * 2); // Zoom out
   };
 
-  
-
   const rotateCamera = (heading) => {
     const camera = {
       center: { latitude: userLocation.latitude, longitude: userLocation.longitude },
@@ -142,7 +140,11 @@ const GoogleMap = ({navigation, route}) => {
   };
 
   const handleBuildingClick = (layoutScreen) => {
-    navigation.navigate(layoutScreen);
+    navigation.navigate(layoutScreen, 
+      {
+        entryPoint: endLocationName,
+        desiredRoom: roomLabel,
+    });
   };
 
   return (
@@ -169,15 +171,28 @@ const GoogleMap = ({navigation, route}) => {
           <FontAwesomeIcon icon={faFlag} size={30} color="black"/>
         </Marker>
         {/* Marker for buildsings */}
-        {locations.map((building) => (
-          <Marker
-            key={building.id}
-            coordinate={building.coordinates.center}
-            title={building.name}
-            onPress={() => handleBuildingClick(building.layout)}
-          >
-            <FontAwesomeIcon icon={faBuilding} size={20} color="black" />
-          </Marker>
+        {buildingLocations.map((building) => (
+          <View key={building.id}>
+            <Marker
+              key={building.id}
+              coordinate={building.coordinates.center}
+              title={building.name}
+              onPress={() => handleBuildingClick(building.layout)}
+            >
+              <FontAwesomeIcon icon={faBuilding} size={20} color="black" />
+            </Marker>
+            {/* purely for debugging */}
+            {/* {building.coordinates.entries && 
+              Object.entries(building.coordinates.entries).map(([entryKey, entryCoordinates]) => (
+                <Marker
+                  key={entryKey} // Unique key for each entry marker
+                  coordinate={entryCoordinates}
+                  title={`Entry: ${entryKey}`}
+                />
+              ))
+            } */}
+
+          </View>
         ))}
 
         {/* Polyline to show the route */}
