@@ -57,8 +57,8 @@ export const getBuildingLayoutByName = (name) => buildingLocations.find(loc => l
 
 const buildingData = {
   "SH": require('./BuildingLayout/SH.jsx').default,
-  // "MAC": require('./BuildingLayout/MAC.jsx').default,
-  // "GEO": require('./BuildingLayout/GEO.jsx').default,
+  "MAC": require('./BuildingLayout/MAC.jsx').default,
+  "GS": require('./BuildingLayout/GS.jsx').default,
 }
 
 export const getBuildingDataByInitals = (initals) => { return buildingData[initals] || null }
@@ -66,7 +66,7 @@ export const getBuildingDataByInitals = (initals) => { return buildingData[inita
 const buildingInitals = {
   "Science Hall" :'SH', 
   "MAC" :'MAC', 
-  "Geoscience Building" :'GEO', 
+  "Geoscience Building" :'GS', 
 }
 export const getBuildingInitalsByName = (name) => { return buildingInitals[name] || null }
 
