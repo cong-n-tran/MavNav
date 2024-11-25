@@ -17,9 +17,9 @@ const FindRoom = ({ navigation }) => {
     const endLabel = "Science Hall"; //default
     const  roomlabel = "SH_109"; // default
 
-    const [startLocationLabel, setStartLocationLabel] = useState('');
-    const [endLocationLabel, setEndLocationLabel] = useState('');
-    const [roomLocationLabel, setRoomLocationLabel] = useState('');
+    const [startLocationLabel, setStartLocationLabel] = useState(startLabel);
+    const [endLocationLabel, setEndLocationLabel] = useState(endLabel);
+    const [roomLocationLabel, setRoomLocationLabel] = useState(roomlabel);
 
     // boolean to show this picker
     const [showRoomSelection, setShowRoomSelection] = useState(false);
