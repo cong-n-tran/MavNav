@@ -2,6 +2,7 @@ package com.mavnav;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DataStore {
 
@@ -19,9 +20,22 @@ public class DataStore {
     }
 
     private DataStore() {
+        // Initialize with default data
+        student = new Student("1002006000", "George", "Washington", "george.washington@example.com", "Computer Science");
+
         classes = new ArrayList<>();
+        classes.add(new ClassInfo("1", "Physics", "Dr. Spurlock", "Room 101"));
+        classes.add(new ClassInfo("2", "Calculus", "Dr. Yang", "Room 217"));
+
         events = new ArrayList<>();
-        student = new Student("12345", "John", "Doe", "john.doe@example.com", "Computer Science");
+        events.add(new Event("1", "Community Meetup", "Central Park", "2024-12-01 10:00 AM",
+                "A meetup for local community members to network and share ideas.", List.of("Favorites")));
+        events.add(new Event("2", "Tech Conference", "Downtown Convention Center", "2024-12-10 09:00 AM",
+                "A conference showcasing the latest in technology and innovation.", List.of("Favorites")));
+        events.add(new Event("3", "Pizza Party", "Student Union", "2024-12-15 06:00 PM",
+                "A fun evening with free pizza and games.", List.of("Off Campus")));
+        events.add(new Event("4", "Study Party", "Library", "2024-12-18 09:00 PM",
+                "Join us for a productive study session!", List.of("On Campus")));
     }
 
     // Student Class
@@ -59,21 +73,27 @@ public class DataStore {
         public String getMajor() {
             return major;
         }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public void setMajor(String major) {
+            this.major = major;
+        }
     }
 
     // ClassInfo Class
     public static class ClassInfo {
-        private String classId; // Updated to String
+        private String classId;
         private String className;
         private String professor;
-        private String capacity;
         private String location;
 
-        public ClassInfo(String classId, String className, String professor, String capacity, String location) {
+        public ClassInfo(String classId, String className, String professor, String location) {
             this.classId = classId;
             this.className = className;
             this.professor = professor;
-            this.capacity = capacity;
             this.location = location;
         }
 
@@ -85,106 +105,171 @@ public class DataStore {
             return className;
         }
 
+        public void setClassName(String className) {
+            this.className = className;
+        }
+
         public String getProfessor() {
             return professor;
         }
 
-        public String getCapacity() {
-            return capacity;
+        public void setProfessor(String professor) {
+            this.professor = professor;
         }
 
         public String getLocation() {
             return location;
         }
+
+        public void setLocation(String location) {
+            this.location = location;
+        }
     }
 
     // Event Class
     public static class Event {
+        private String eventId;
         private String name;
         private String location;
         private String dateAndTime;
         private String description;
+        private List<String> tags;
 
-        public Event(String name, String location, String dateAndTime, String description) {
+        public Event(String eventId, String name, String location, String dateAndTime, String description, List<String> tags) {
+            this.eventId = eventId;
             this.name = name;
             this.location = location;
             this.dateAndTime = dateAndTime;
             this.description = description;
+            this.tags = new ArrayList<>(tags);
+        }
+
+        public String getEventId() {
+            return eventId;
         }
 
         public String getName() {
             return name;
         }
 
+        public void setName(String name) {
+            this.name = name;
+        }
+
         public String getLocation() {
             return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
         }
 
         public String getDateAndTime() {
             return dateAndTime;
         }
 
+        public void setDateAndTime(String dateAndTime) {
+            this.dateAndTime = dateAndTime;
+        }
+
         public String getDescription() {
             return description;
         }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public List<String> getTags() {
+            return tags;
+        }
+
+        public void setTags(List<String> tags) {
+            this.tags = new ArrayList<>(tags);
+        }
+
+        public boolean hasTag(String tag) {
+            return tags.contains(tag);
+        }
+
+        public void toggleFavorite() {
+            if (tags.contains("Favorites")) {
+                tags.remove("Favorites");
+            } else {
+                tags.add("Favorites");
+            }
+        }
     }
 
-    // Getter for Student
+    // Student-related methods
     public Student getStudent() {
         return student;
     }
 
-    // Getters for Classes
+    // Class-related methods
     public List<ClassInfo> getClasses() {
         return classes;
     }
 
-    // Add a Class
-    public void addClass(String classId, String className, String professor, String capacity, String location) {
-        ClassInfo classInfo = new ClassInfo(classId, className, professor, capacity, location);
-        classes.add(classInfo);
+    public void addClass(String classId, String className, String professor, String location) {
+        classes.add(new ClassInfo(classId, className, professor, location));
     }
 
-    // Edit a Class
-    public void editClass(String classId, String className, String professor, String capacity, String location) {
+    public void editClass(String classId, String className, String professor, String location) {
         for (ClassInfo classInfo : classes) {
             if (classInfo.getClassId().equals(classId)) {
-                classes.remove(classInfo);
-                classes.add(new ClassInfo(classId, className, professor, capacity, location));
+                classInfo.setClassName(className);
+                classInfo.setProfessor(professor);
+                classInfo.setLocation(location);
                 return;
             }
         }
     }
 
-    // Remove a Class
     public void removeClass(String classId) {
         classes.removeIf(classInfo -> classInfo.getClassId().equals(classId));
     }
 
-    // Getters for Events
+    // Event-related methods
     public List<Event> getEvents() {
         return events;
     }
 
-    // Add an Event
-    public void addEvent(String name, String location, String dateAndTime, String description) {
-        Event event = new Event(name, location, dateAndTime, description);
-        events.add(event);
+    public List<Event> getEventsByTag(String tag) {
+        if (tag.equals("All")) {
+            return new ArrayList<>(events);
+        }
+        return events.stream().filter(event -> event.hasTag(tag)).collect(Collectors.toList());
     }
 
-    // Edit an Event
-    public void editEvent(String name, String location, String dateAndTime, String description) {
+    public void addEvent(String name, String location, String dateAndTime, String description, List<String> tags) {
+        String eventId = String.valueOf(events.size() + 1);
+        events.add(new Event(eventId, name, location, dateAndTime, description, tags));
+    }
+
+    public void editEvent(String eventId, String name, String location, String dateAndTime, String description, List<String> tags) {
         for (Event event : events) {
-            if (event.getName().equals(name)) {
-                events.remove(event);
-                events.add(new Event(name, location, dateAndTime, description));
+            if (event.getEventId().equals(eventId)) {
+                event.setName(name);
+                event.setLocation(location);
+                event.setDateAndTime(dateAndTime);
+                event.setDescription(description);
+                event.setTags(tags);
                 return;
             }
         }
     }
 
-    // Remove an Event
-    public void removeEvent(String name) {
-        events.removeIf(event -> event.getName().equals(name));
+    public void removeEvent(String eventId) {
+        events.removeIf(event -> event.getEventId().equals(eventId));
+    }
+
+    public void toggleFavorite(String eventId) {
+        for (Event event : events) {
+            if (event.getEventId().equals(eventId)) {
+                event.toggleFavorite();
+                return;
+            }
+        }
     }
 }
