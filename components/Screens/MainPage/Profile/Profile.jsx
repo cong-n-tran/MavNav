@@ -136,7 +136,7 @@ const Profile = ({ navigation }) => {
                     </StyledView>
 
                     {/* User Info */}
-                    <StyledView className="flex-row justify-between items-center bg-white p-4 rounded-lg shadow-md mb-4">
+                    <StyledView className="flex-row justify-between items-center bg-white p-4 rounded-lg shadow-md mb-4  border-orange-300 border-4">
                         <StyledView className="flex-1 mr-4">
                             <Text className="text-2xl font-bold text-blue-800">{student.firstName} {student.lastName}</Text>
                             <Text className="text-sm text-gray-600">ID: {student.studentId}</Text>

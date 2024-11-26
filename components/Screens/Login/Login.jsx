@@ -35,7 +35,7 @@ const Login = ({ navigation }) => {
       <StyledView className='flex items-start justify-end w-full mt-4 ml-4'>
         <Text onPress={() => navigation.goBack()}>Back</Text>
       </StyledView>
-      <StyledText className="text-2xl font-bold text-balck mb-4 mt-24">Login</StyledText>
+      <StyledText className="text-2xl font-bold text-blue-900 mb-4 mt-24">Login</StyledText>
       <StyledText className="text-lg font-regular text-[#ffffff] mb-12">Welcome Back!</StyledText>
       <TextInput
         placeholder="Email"

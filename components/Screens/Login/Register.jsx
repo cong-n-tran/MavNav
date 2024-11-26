@@ -35,7 +35,7 @@ const Register = ({ navigation }) => {
             <StyledView className='flex items-start justify-end w-full mt-4 ml-4'>
                 <Text onPress={() => navigation.goBack()}>Back</Text>
             </StyledView>
-            <StyledText className="text-2xl font-bold text-blue-800 mb-4 mt-14">Create An Account</StyledText>
+            <StyledText className="text-2xl font-bold text-blue-900 mb-4 mt-14">Create An Account</StyledText>
             <StyledText className="text-lg font-regular text-[#ffffff] mb-12">Get signed up!</StyledText>
             <StyledView className="flex w-full flex-row">
                 <TextInput

@@ -122,8 +122,8 @@ const MainPage = ({ navigation }) => {
     }
 
     return (
-        <ScrollView>
-            <StyledView className="flex-1 bg-gray-50">
+        <ScrollView className="bg-blue-100">
+            <StyledView className="flex-1 bg-blue-100">
                 {/* Header */}
                 <LinearGradient
                     colors={["#0064B1", "#003B73"]} // UTA Blue blending into a darker shade of blue

@@ -19,7 +19,7 @@ const Home = ({ navigation }) => {
             source={require("../../../assets/images/logo2.png")}
             className="w-20 h-20 rounded-full border-4 border-blue-800 mb-10"
           />
-          <StyledText className="text-xl font-semibold text-blue-600 mb-4 text-">
+          <StyledText className=" italic text-xl font-mono text-blue-600 mb-4">
             Start your path with MavNav
           </StyledText>
           
