@@ -11,15 +11,18 @@ const MainPage = ({ navigation }) => {
     const [startLocationLabel, setStartLocationLabel] = useState(startLabel);
     const [endLocationLabel, setEndLocationLabel] = useState(endLabel);
 
-    const getLocationByName = (name) => buildingLocations.find(loc => loc.name === name)?.coordinates.default;
+    const getLocationByName = (name) => buildingLocations.find(loc => loc.name === name);
 
     const handleConfirmLocations = () => {
         const startLocation = getLocationByName(startLocationLabel);
         const endLocation = getLocationByName(endLocationLabel);
+
         if (startLocation && endLocation) {
             navigation.navigate('GoogleMap', {
                 startLocation: startLocation,
-                endLocation: endLocation,
+                endLocationObject: endLocation,
+                // roomLabel:"", 
+                // endLocationLayout :""
             });
         }
     };
@@ -88,32 +91,7 @@ const MainPage = ({ navigation }) => {
                     </Pressable>
                 </StyledView>
 
-                {/* You May Like Section */}
-                <StyledView className="px-6 mt-6">
-                    <StyledText className="text-lg font-bold text-gray-800 mb-4">You may like</StyledText>
-                    <View className="flex-row space-x-6">
-                        <Pressable className="items-center space-y-2"  onPress={handleConfirmLocations}>
-                            <View className="w-16 h-16 bg-orange-200 rounded-full items-center justify-center">
-                                <Image
-                                    source={require("../../../assets/images/001-office-building.png")} // Replace with your end icon path
-                                    style={{ width: 24, height: 24 }}
-                                    resizeMode="contain"
-                                />
-                            </View>
-                            <Text className="text-gray-700">Towkay Club</Text>
-                        </Pressable>
-                        <Pressable className="items-center space-y-2"  onPress={handleConfirmLocations}>
-                            <View className="w-16 h-16 bg-orange-200 rounded-full items-center justify-center">
-                                <Image
-                                    source={require("../../../assets/images/003-restaurant.png")} // Replace with your end icon path
-                                    style={{ width: 24, height: 24 }}
-                                    resizeMode="contain"
-                                />
-                            </View>
-                            <Text className="text-gray-700">Delivery form</Text>
-                        </Pressable>
-                    </View>
-                </StyledView>
+                
             </StyledView>
 
         </ScrollView>

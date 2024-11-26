@@ -49,7 +49,6 @@ const Register = ({ navigation }) => {
                     placeholder="Last Name"
                     value={lastName}
                     onChangeText={setLastName}
-                    secureTextEntry
                     className="flex-1 bg-[#F4F6FF] w-full rounded-lg font-semibold pl-4 py-4 mb-4"
                 />
 
@@ -58,7 +57,6 @@ const Register = ({ navigation }) => {
                 placeholder="Student Id"
                 value={studentId}
                 onChangeText={setStudetId}
-                secureTextEntry
                 className="bg-[#F4F6FF] px-8 w-full rounded-lg font-semibold pl-4 py-4 mb-4"
             />
             <TextInput

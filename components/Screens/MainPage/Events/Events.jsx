@@ -56,7 +56,7 @@ const Events = ({ navigation }) => {
   };
 
   return (
-    <StyledView className="flex-1 bg-gray-50">
+    <StyledView className="flex-1 bg-blue-100">
       {/* Header */}
       <StyledView className="bg-blue-800 p-6 rounded-b-3xl shadow-md mb-6">
         <StyledText className="text-white text-4xl font-bold">Events</StyledText>
@@ -73,7 +73,7 @@ const Events = ({ navigation }) => {
               key={index}
               onPress={() => setSelectedTag(tag)}
               className={`px-4 py-2 rounded-full shadow-md ${selectedTag === tag
-                  ? "bg-blue-500 text-white"
+                  ? "bg-blue-800 text-white"
                   : "bg-gray-200 text-gray-800"
                 }`}
             >
@@ -90,15 +90,15 @@ const Events = ({ navigation }) => {
           filteredEvents.map((eventItem, index) => (
             <StyledView
               key={index}
-              className="bg-white p-4 rounded-lg shadow-md border border-gray-200"
+              className="bg-white p-4 rounded-lg shadow-lg border-gray-400 border-4 border-opacity-50"
             >
               <StyledText className="text-xl font-bold text-blue-800 mb-2">
                 {eventItem.name}
               </StyledText>
-              <Text className="text-gray-700">
+              <Text className="text-black">
                 <Text className="font-semibold">Location:</Text> {eventItem.location}
               </Text>
-              <Text className="text-gray-700">
+              <Text className="text-black">
                 <Text className="font-semibold">Date & Time:</Text> {eventItem.dateAndTime}
               </Text>
               <Text className="text-gray-700 mt-2">{eventItem.description}</Text>
@@ -106,14 +106,14 @@ const Events = ({ navigation }) => {
                 <Pressable
                   onPress={() => handleToggleFavorite(index)}
                   className={`px-4 py-2 rounded-md shadow-md ${eventItem.tags.includes("Favorites")
-                      ? "bg-green-500"
-                      : "bg-transparent border border-green-500"
+                      ? "bg-orange-500"
+                      : "bg-white border-orange-500"
                     }`}
                 >
                   <Text
                     className={`font-semibold ${eventItem.tags.includes("Favorites")
                         ? "text-white"
-                        : "text-green-500"
+                        : "text-orange-500"
                       }`}
                   >
                     {eventItem.tags.includes("Favorites") ? "Saved" : "Save"}

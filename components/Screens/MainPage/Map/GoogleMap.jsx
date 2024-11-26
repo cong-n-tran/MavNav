@@ -22,19 +22,25 @@ const GoogleMap = ({navigation, route}) => {
     endLocationLayout 
   } = route.params;
 
-  /*const endLocationName = endLocationObject.name;*/
-  const endLocationName = "";
-  const endLocation = endLocationObject.coordinates;
+  const endLocationName = endLocationObject?.name ?? "";
+  const endLocation = endLocationObject?.coordinates ?? "";
+
+  console.log("STAAARTT")
+  console.log(startLocation)
+
+  console.log("ENNNNDDDD")
+  console.log(endLocationObject)
+
 
   const [userLocation, setUserLocation] = useState({
-    latitude: startLocation.latitude,  // UTA parking lot
-    longitude: startLocation.longitude,
+    latitude: startLocation.coordinates.center.latitude,  // UTA parking lot
+    longitude: startLocation.coordinates.center.longitude,
   });
 
   
   const [destination, setDestination] = useState({
-    latitude: endLocation.latitude, 
-    longitude: endLocation.longitude // geoscience building
+    latitude: endLocation.center.latitude, 
+    longitude: endLocation.center.longitude // geoscience building
   });
 
   //purely for ploting and drawing the polyline
@@ -54,6 +60,8 @@ const GoogleMap = ({navigation, route}) => {
     const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${userLocation.latitude},${userLocation.longitude}&destination=${destination.latitude},${destination.longitude}&key=${GOOGLE_MAPS_APIKEY}&mode=walking`;
     try {
       const response = await axios.get(url);
+      console.log("MUSTTTTTAAAARRDDDDDDD")
+      console.log(response)
       const points = decode(response.data.routes[0].overview_polyline.points);
       const directions = response.data.routes[0].legs[0].steps;
       const firstStep = directions[0];
@@ -177,7 +185,7 @@ const GoogleMap = ({navigation, route}) => {
             <Marker
               key={building.id}
               coordinate={building.coordinates.center}
-              /*title={building.name}*/
+              title={building.name}
               onPress={() => handleBuildingClick(building.layout)}
             >
               <FontAwesomeIcon icon={faBuilding} size={20} color="black" />

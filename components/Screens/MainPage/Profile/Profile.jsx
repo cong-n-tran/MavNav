@@ -38,9 +38,9 @@ const Profile = ({ navigation }) => {
     const semesters = ['Spring 2024', 'Summer 2024', 'Fall 2024', 'Winter 2024'];
 
     const [student, setStudent] = useState({
-        studentId: 1002006000,
-        firstName: 'George',
-        lastName: 'Washington',
+        studentId: 1001325996,
+        firstName: 'Jason',
+        lastName: 'Yeung',
         email: null,
         major: 'Computer Science',
     });
@@ -123,7 +123,7 @@ const Profile = ({ navigation }) => {
     };
 
     return (
-        <ScrollView decelerationRate="normal" className="bg-gray-50">
+        <ScrollView decelerationRate="normal" className="bg-blue-100">
             {isLoading ? (
                 <StyledView className="flex-1 justify-center items-center p-6">
                     <StyledText className="text-blue-800 text-xl">Loading...</StyledText>
@@ -143,15 +143,15 @@ const Profile = ({ navigation }) => {
                             <Text className="text-sm text-gray-600">{student.email || 'Email not available'}</Text>
                         </StyledView>
                         <Image
-                            source={{ uri: 'https://picsum.photos/200/300' }}
+                            source={require("../../../../assets/images/jason_pic.png")}
                             className="w-20 h-20 rounded-full border-4 border-blue-800"
                         />
                     </StyledView>
 
                     {/* Semester Picker and Edit Section */}
-                    <StyledView className="bg-white p-4 rounded-lg shadow-md mb-4">
-                        <StyledText className="text-xl font-bold text-blue-800 mb-4">Classes</StyledText>
-                        <StyledView className="flex-row items-center border border-gray-200 rounded-lg p-2 bg-gray-50">
+                    <StyledView className="bg-blue-100 p-4 rounded-lg shadow-md mb-2">
+                        <StyledText className="font-extrabold text-3xl text-black mb-4">Classes</StyledText>
+                        <StyledView className="flex-row items-center rounded-lg p-1 bg-gray-100">
                             <Picker
                                 style={{ flex: 1 }}
                                 selectedValue={selectedSemester}
@@ -183,7 +183,7 @@ const Profile = ({ navigation }) => {
 
                     {/* Add/Edit Class Form */}
                     {isEditing && (
-                        <StyledView className="p-4 bg-gray-50 border border-gray-300 rounded-lg mb-4">
+                        <StyledView className="p-4 bg-white border border-gray-300 rounded-lg mb-4">
                             <StyledView className="flex-row justify-between items-center mb-4">
                                 <StyledText className="text-lg font-bold">
                                     {editClassId ? 'Edit Class' : 'Add New Class'}
@@ -222,16 +222,16 @@ const Profile = ({ navigation }) => {
                                 {classes[selectedSemester]?.map((classInfo) => (
                                     <StyledView
                                         key={classInfo.classId}
-                                        className="bg-white p-4 rounded-lg shadow-md border border-gray-200 mb-4"
+                                        className="bg-white p-4 rounded-lg shadow-md border-gray-400 border-4 mb-4"
                                     >
                                         <StyledText className="text-xl font-bold text-blue-800 mb-2">
                                             {classInfo.className}
                                         </StyledText>
                                         <View className="space-y-2">
-                                            <StyledText className="text-sm text-gray-600">
+                                            <StyledText className="text-sm text-black">
                                                 <Text className="font-semibold">Professor:</Text> {classInfo.classProfessor}
                                             </StyledText>
-                                            <StyledText className="text-sm text-gray-600">
+                                            <StyledText className="text-sm text-black">
                                                 <Text className="font-semibold">Location:</Text> {classInfo.classLocation}
                                             </StyledText>
                                         </View>
