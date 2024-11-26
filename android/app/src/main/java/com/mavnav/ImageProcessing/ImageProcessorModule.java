@@ -82,6 +82,10 @@ public class ImageProcessorModule extends ReactContextBaseJavaModule {
                 Imgproc.drawContours(adjustedImage, contours, -1, new Scalar(0), Imgproc.FILLED);
             }
 
+            if (imageMat.channels() == 1) { // Check if the image is grayscale
+                Imgproc.cvtColor(imageMat, imageMat, Imgproc.COLOR_GRAY2BGR);
+            }
+
             // Perform pathfinding to generate the path from start to end
             PathFinderPackage pathfinder = new PathFinderPackage();
             ArrayList<Point> path = pathfinder.performAStar(imageMat, distanceTransformed, new Point(startX, startY), new Point(endX, endY));
