@@ -22,7 +22,8 @@ const GoogleMap = ({navigation, route}) => {
     endLocationLayout 
   } = route.params;
 
-  const endLocationName = endLocationObject.name;
+  /*const endLocationName = endLocationObject.name;*/
+  const endLocationName = "";
   const endLocation = endLocationObject.coordinates;
 
   const [userLocation, setUserLocation] = useState({
@@ -176,7 +177,7 @@ const GoogleMap = ({navigation, route}) => {
             <Marker
               key={building.id}
               coordinate={building.coordinates.center}
-              title={building.name}
+              /*title={building.name}*/
               onPress={() => handleBuildingClick(building.layout)}
             >
               <FontAwesomeIcon icon={faBuilding} size={20} color="black" />

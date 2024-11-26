@@ -4,7 +4,7 @@ import Events from "../Screens/MainPage/Events/Events";
 const SettingPageStack = () => {
     const SettingPage = createNativeStackNavigator();
      return (
-        <SettingPage.Navigator>
+        <SettingPage.Navigator screenOptions={{headerShown:false}}>
           <SettingPage.Screen name="Setting Stack" component={Events} />
         </SettingPage.Navigator>
     );
