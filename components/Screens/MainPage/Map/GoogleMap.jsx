@@ -22,7 +22,7 @@ const GoogleMap = ({navigation, route}) => {
     endLocationLayout 
   } = route.params;
 
-  const endLocationName = endLocationObject?.name ?? "";
+  const endLocationName = endLocationObject?.name ?? endLocationObject.name;
   const endLocation = endLocationObject?.coordinates ?? "";
 
   console.log("STAAARTT")
@@ -33,14 +33,14 @@ const GoogleMap = ({navigation, route}) => {
 
 
   const [userLocation, setUserLocation] = useState({
-    latitude: startLocation.coordinates.center.latitude,  // UTA parking lot
-    longitude: startLocation.coordinates.center.longitude,
+    latitude: startLocation.latitude,  // UTA parking lot
+    longitude: startLocation.longitude,
   });
 
   
   const [destination, setDestination] = useState({
-    latitude: endLocation.center.latitude, 
-    longitude: endLocation.center.longitude // geoscience building
+    latitude: endLocation.latitude, 
+    longitude: endLocation.longitude // geoscience building
   });
 
   //purely for ploting and drawing the polyline
