@@ -34,8 +34,7 @@ public class PathFinderPackage {
         }
     }
 
-
-        // Perform A* search to find a path
+    // Perform A* search to find a path
     public ArrayList<Point> performAStar(Mat image, Mat distanceTransformed, Point start, Point end) {
         ArrayList<Point> path = new ArrayList<>();
 

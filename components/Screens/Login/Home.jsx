@@ -1,7 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable, Button, Image, ImageBackground } from 'react-native';
-import { styled } from 'nativewind';
-
+import {Pressable, Image, ImageBackground } from 'react-native';
 import { StyledView, StyledText } from '../../Style/Style';
 
 
@@ -55,15 +53,6 @@ const Home = ({ navigation }) => {
           </Pressable>
         </StyledView>
       </ImageBackground>
-      {/* <Image
-        source={require("../../../assets/images/bg_landing_page.png")}
-        className = " bg- w-full h-[250px] bg-center-bottom bg-no-repeat bg-cover mb-8 md:bg-cover md:h-[350px]"
-      /> */}
-
-
-
-
-
     </StyledView>
   );
 };

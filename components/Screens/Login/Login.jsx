@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { View, TextInput, Pressable, Text, Alert } from 'react-native';
+import { TextInput, Pressable, Text, Alert } from 'react-native';
 import { NativeModules } from 'react-native';
-import { styled } from 'nativewind';
-import Icon from 'react-native-vector-icons/EvilIcons';
 
 import { StyledView, StyledText } from '../../Style/Style';
 

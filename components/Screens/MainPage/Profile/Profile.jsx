@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-
 import { ScrollView, TextInput, Pressable, Text, Image, View, Alert } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { Picker } from '@react-native-picker/picker';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTrash, faPencil} from '@fortawesome/free-solid-svg-icons';
-
-
 import {
     StyledText,
     StyledView,
