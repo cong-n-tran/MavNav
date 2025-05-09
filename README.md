@@ -1,28 +1,23 @@
 # MavNav
 
-MavNav is an Android mobile application designed to help students navigate complex campus buildings by providing the most direct routes to their destinations.
+An Android mobile application using React Native, Android Studio, and Firebase to help students navigate complex campus buildings by providing the most direct routes to classes using AI Agents and Heuristics.
 
 ## Features
-
-- Campus building navigation
-- Direct route calculation
+- AI-powered campus navigation
+- Heuristic route calculation
 - User-friendly interface
-- Real-time updates
+- Targets 4,500+ student users
 
 ## Technology Stack
-
-- **React Native**: Cross-platform mobile development framework
-- **Android Studio**: IDE for Android app development and testing
-- **Firebase**: Backend services including:
-  - Authentication for user management
-  - Realtime Database for storing navigation data
-  - Cloud Storage for map resources
-
-## Installation
-
-### Prerequisites
-
-- Node.js
+- React Native
 - Android Studio
-- An active Firebase project
+- Firebase (Authentication, Database, Storage)
 
+## Implementation
+The app uses AI agents and heuristic algorithms to calculate efficient routes through campus buildings, helping students find their classes quickly.
+
+## Setup
+1. Clone repository
+2. Install dependencies: `npm install`
+3. Configure Firebase
+4. Run: `npx react-native run-android`
