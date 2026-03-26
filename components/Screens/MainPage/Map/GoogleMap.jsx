@@ -1,0 +1,291 @@
+import React, { useEffect, useState } from 'react';
+import { View, Text, PermissionsAndroid, Platform, TouchableOpacity, Alert } from 'react-native';
+import MapView, { Marker, Polyline, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faFlag, faPerson, faBuilding } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+import { 
+  decode, 
+  haversine, 
+  calculateZoomLevel, 
+  calculateHeading 
+} from './HelperFunctions/MapHelperFunctions';
+import { GOOGLE_MAPS_APIKEY } from '../../../API';
+import { buildingLocations } from './Locations/BuildingLocations';
+
+const GoogleMap = ({navigation, route}) => {
+
+  const { 
+    startLocation, 
+    endLocationObject, 
+    roomLabel, 
+    endLocationLayout 
+  } = route.params;
+
+  const endLocationName = endLocationObject?.name ?? endLocationObject.name;
+  const endLocation = endLocationObject?.coordinates ?? "";
+
+  console.log("STAAARTT")
+  console.log(startLocation)
+
+  console.log("ENNNNDDDD")
+  console.log(endLocationObject)
+
+
+  const [userLocation, setUserLocation] = useState({
+    latitude: startLocation.latitude,  // UTA parking lot
+    longitude: startLocation.longitude,
+  });
+
+  
+  const [destination, setDestination] = useState({
+    latitude: endLocation.latitude, 
+    longitude: endLocation.longitude // geoscience building
+  });
+
+  //purely for ploting and drawing the polyline
+  const [routeCoordinates, setRouteCoordinates] = useState([]); //stores the decoded overview_polyview coordiantes
+
+  
+  const [directions, setDirections] = useState([]); // directions from the response.data.routes[0].legs[0].steps
+  const [currentStep, setCurrentStep] = useState(null); // Step-by-step directions
+  const [currentStepIndex, setCurrentStepIndex] = useState(0); // Current step in directions
+
+  const [zoomLevel, setZoomLevel] = useState(0.0025); //control the zooming
+
+  const [mapHeading, setMapHeading] = useState(0); // Controls the direction the map faces
+  let mapViewRef = React.createRef(); // path direction
+
+  const fetchDirections = async () => {
+    const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${userLocation.latitude},${userLocation.longitude}&destination=${destination.latitude},${destination.longitude}&key=${GOOGLE_MAPS_APIKEY}&mode=walking`;
+    try {
+      const response = await axios.get(url);
+      console.log("MUSTTTTTAAAARRDDDDDDD")
+      console.log(response)
+      const points = decode(response.data.routes[0].overview_polyline.points);
+      const directions = response.data.routes[0].legs[0].steps;
+      const firstStep = directions[0];
+
+      mapViewRef.current.fitToCoordinates([startLocation, endLocation], {
+        edgePadding: { top: 25, right: 25, bottom: 25, left: 25 },
+        animated: true,
+      });
+
+      setRouteCoordinates(points);
+      setDirections(directions); 
+      setCurrentStep(firstStep);
+
+    } catch (error) {
+        console.error('Error fetching directions:', error); //weird erorr when first start up, may lookinto it
+    }
+  };
+
+  useEffect(() => {
+    fetchDirections();
+  }, [destination]);
+
+  useEffect(() => {
+    if (mapHeading !== null) {
+      rotateCamera(mapHeading);
+    }
+  }, [mapHeading]);
+
+
+  const goToNextStep = () => {
+    if (currentStepIndex < directions.length-1) { // Ensures we don't go out of bounds
+      const newIndex = currentStepIndex + 1;
+      const nextStep = directions[newIndex]; // Calculate the next step index
+      const newHeaderDirection = calculateHeading(nextStep.start_location, nextStep.end_location)
+
+      setCurrentStepIndex(newIndex); // Update index
+      setCurrentStep(nextStep); // Set the new current step
+      setUserLocation({
+        latitude: nextStep.start_location.lat,
+        longitude: nextStep.start_location.lng,
+      });
+      setMapHeading(newHeaderDirection);
+      rotateCamera(newHeaderDirection);
+    }
+    // going beyond the index will take you to the building layout
+    else{
+      handleBuildingClick(endLocationLayout)
+    }
+  };
+
+  const goToPreviousStep = () => {
+    if (currentStepIndex > 0) {
+      const prevIndex = currentStepIndex - 1;
+      const prevStep = directions[prevIndex];
+      const prevHeaderDirection = calculateHeading(prevStep.start_location, prevStep.end_location)
+
+      setCurrentStepIndex(prevIndex);
+      setCurrentStep(prevStep);
+      setUserLocation({
+        latitude: prevStep.start_location.lat,
+        longitude: prevStep.start_location.lng,
+      });
+      setMapHeading(prevHeaderDirection);
+      rotateCamera(prevHeaderDirection);
+    }
+  };
+
+  const handleZoomIn = () => {
+    setZoomLevel(zoomLevel / 2); // Zoom in
+  };
+  
+  const handleZoomOut = () => {
+    setZoomLevel(zoomLevel * 2); // Zoom out
+  };
+
+  const rotateCamera = (heading) => {
+    const camera = {
+      center: { latitude: userLocation.latitude, longitude: userLocation.longitude },
+      heading: heading, // Apply the calculated heading to the camera
+      pitch: 60, // Optional: Set pitch to 0 for a flat view
+      zoom: 20, // Optional: Set zoom level (you can adjust this based on your preference)
+    };
+    // Animate the camera to the new heading
+    mapViewRef.current.animateCamera(camera, { duration: 1000 }); // Optional: Adjust duration for smoothness
+  };
+
+  const handleBuildingClick = (layoutScreen) => {
+    navigation.navigate(layoutScreen, 
+      {
+        entryPoint: endLocationName,
+        desiredRoom: roomLabel,
+    });
+  };
+
+  return (
+    <View>
+      <MapView
+        provider={PROVIDER_GOOGLE}
+        style={{ width: '100%', height: '100%' }}
+        region={{
+          latitude: userLocation.latitude, 
+          longitude: userLocation.longitude, 
+          latitudeDelta: zoomLevel, 
+          longitudeDelta: zoomLevel,
+        }}
+        showsUserLocation={true}
+        ref={mapViewRef}
+      >
+        {/* Marker for user's current location */}
+        <Marker coordinate={userLocation} title="You are here">
+          <FontAwesomeIcon icon={faPerson} size={40} color="black"/>
+        </Marker>
+
+        {/* Marker for destination */}
+        <Marker coordinate={destination} title="Your Destination" pinColor='black'>
+          <FontAwesomeIcon icon={faFlag} size={30} color="black"/>
+        </Marker>
+        {/* Marker for buildsings */}
+        {buildingLocations.map((building) => (
+          <View key={building.id}>
+            <Marker
+              key={building.id}
+              coordinate={building.coordinates.center}
+              title={building.name}
+              onPress={() => handleBuildingClick(building.layout)}
+            >
+              <FontAwesomeIcon icon={faBuilding} size={20} color="black" />
+            </Marker>
+            {/* purely for debugging */}
+            {/* {building.coordinates.entries && 
+              Object.entries(building.coordinates.entries).map(([entryKey, entryCoordinates]) => (
+                <Marker
+                  key={entryKey} // Unique key for each entry marker
+                  coordinate={entryCoordinates}
+                  title={`Entry: ${entryKey}`}
+                />
+              ))
+            } */}
+
+          </View>
+        ))}
+
+        {/* Polyline to show the route */}
+        {routeCoordinates.length > 0 && (
+          <Polyline
+            coordinates={routeCoordinates}
+            strokeWidth={3}
+            strokeColor="#7F7FFF"
+          />
+        )}
+      </MapView>
+      {currentStep && (
+        <View className="absolute bottom-12 left-4 right-4 p-5 bg-white rounded-2xl shadow-lg">
+          {/* Step Details */}
+          <Text className="text-lg font-bold text-gray-800">Next Step:</Text>
+          <Text className="text-base text-gray-700 mt-2">{currentStep.html_instructions.replace(/<[^>]+>/g, '')}</Text>
+          <Text className="mt-3 text-sm text-gray-500">Distance: {currentStep.distance.text}</Text>
+
+          <View className="mt-6 flex flex-row justify-between space-x-4">
+            {/* Navigation Buttons */}
+            <TouchableOpacity onPress={goToPreviousStep} className="flex-1 bg-blue-500 p-3 rounded-full shadow-lg flex justify-center items-center">
+              <Text className="text-white text-lg font-medium">Previous</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goToNextStep} className="flex-1 bg-green-500 p-3 rounded-full shadow-lg flex justify-center items-center">
+              <Text className="text-white text-lg font-medium">Next</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+      <View className="absolute top-1/2 right-4 flex flex-col space-y-2">
+        <TouchableOpacity onPress={handleZoomIn} className="bg-transparent border-2 border-gray-800 p-3 rounded-full shadow-md flex justify-center items-center">
+          <Text className="text-3xl text-gray-800">+</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleZoomOut} className="bg-transparent border-2 border-gray-800 p-3 rounded-full shadow-md flex justify-center items-center">
+          <Text className="text-3xl text-gray-800">-</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+export default GoogleMap;
+
+
+
+// // Get user's location with permission check
+// const requestLocationPermission = async () => {
+//     if (Platform.OS === 'android') {
+//       const granted = await PermissionsAndroid.request(
+//         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+//       );
+//       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+//         Geolocation.getCurrentPosition(
+//           (position) => {
+//             setUserLocation({
+//               ...userLocation,
+//               latitude: position.coords.latitude,
+//               longitude: position.coords.longitude,
+//             });
+//           },
+//           (error) => {
+//             console.error(error);
+//           },
+//           { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+//         );
+//       }
+//     } else {
+//       Geolocation.requestAuthorization('whenInUse').then(() => {
+//         Geolocation.getCurrentPosition(
+//           (position) => {
+//             setUserLocation({
+//               ...userLocation,
+//               latitude: position.coords.latitude,
+//               longitude: position.coords.longitude,
+//             });
+//           },
+//           (error) => {
+//             console.error(error);
+//           },
+//           { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+//         );
+//       });
+//     }
+//   };
+
+// useEffect(() => {
+//     requestLocationPermission();
+//   }, []);
