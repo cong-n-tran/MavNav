@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "901871690325",
     "project_id": "testfirebase-c1bf8",
-    "storage_bucket": "testfirebase-c1bf8.appspot.com"
+    "storage_bucket": "testfirebase-c1bf8.firebasestorage.app"
   },
   "client": [
     {
